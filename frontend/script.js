@@ -283,6 +283,11 @@ function getFilteredInternships() {
   return sortInternships(results, elements.sortSelect.value);
 }
 
+function setStateVisible(element, visible) {
+  element.hidden = !visible;
+  element.style.display = visible ? "" : "none";
+}
+
 function renderInternships() {
   const results = getFilteredInternships();
   const fragment = document.createDocumentFragment();
@@ -295,7 +300,7 @@ function renderInternships() {
   const total = document.createElement("strong");
   total.textContent = String(internshipPagination?.total ?? internships.length);
   elements.resultCount.append("Showing ", count, " of ", total, " internships");
-  elements.emptyState.hidden = results.length > 0;
+  setStateVisible(elements.emptyState, results.length === 0);
 }
 
 function createDialogSection(title, content) {
@@ -452,9 +457,9 @@ async function loadInternships() {
     return internshipRequest;
   }
 
-  elements.loadingState.hidden = false;
-  elements.errorState.hidden = true;
-  elements.emptyState.hidden = true;
+  setStateVisible(elements.loadingState, true);
+  setStateVisible(elements.errorState, false);
+  setStateVisible(elements.emptyState, false);
   elements.grid.replaceChildren();
   elements.resultCount.textContent = "Loading internships…";
   elements.retryLoad.disabled = true;
@@ -468,9 +473,9 @@ async function loadInternships() {
     internshipPagination = null;
     populateFilters();
     elements.grid.replaceChildren();
-    elements.loadingState.hidden = true;
-    elements.errorState.hidden = false;
-    elements.emptyState.hidden = true;
+    setStateVisible(elements.loadingState, false);
+    setStateVisible(elements.errorState, true);
+    setStateVisible(elements.emptyState, false);
     elements.resultCount.textContent = "Internships are unavailable";
     return;
   } finally {
@@ -479,8 +484,8 @@ async function loadInternships() {
 
   internships = result.data;
   internshipPagination = result.pagination;
-  elements.errorState.hidden = true;
-  elements.loadingState.hidden = true;
+  setStateVisible(elements.errorState, false);
+  setStateVisible(elements.loadingState, false);
   populateFilters();
   document.querySelector("#stat-internships").textContent = `${internshipPagination.total}+`;
   document.querySelector("#stat-companies").textContent = `${new Set(internships.map((item) => item.company)).size}+`;
