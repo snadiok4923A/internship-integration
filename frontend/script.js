@@ -422,7 +422,7 @@ async function loadInternships() {
   elements.retryLoad.disabled = true;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/internships`);
+    const response = await fetch(`${API_BASE_URL}/internships`, { cache: "no-store" });
     if (!response.ok) {
       throw new Error(`Internship data request failed with status ${response.status}`);
     }
