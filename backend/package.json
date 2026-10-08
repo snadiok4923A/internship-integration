@@ -1,0 +1,30 @@
+{
+  "name": "internship-integration-api",
+  "version": "1.0.0",
+  "description": "Secure internship API and SQLite persistence for the Task 04 integration project",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node database/seed.js",
+    "test": "node --test ../tests/*.test.js"
+  },
+  "keywords": [
+    "internship",
+    "express",
+    "sqlite",
+    "api",
+    "security"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.1.0",
+    "helmet": "^8.1.0"
+  }
+}

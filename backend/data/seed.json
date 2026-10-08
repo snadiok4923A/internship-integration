@@ -1,0 +1,80 @@
+[
+  {
+    "title": "Frontend Developer Intern",
+    "company": "NovaTech Labs",
+    "domain": "Web Development",
+    "location": "Remote",
+    "work_type": "Remote",
+    "duration": "3 Months",
+    "stipend": 12000,
+    "skills": ["HTML", "CSS", "JavaScript"],
+    "description": "Work with the frontend team to build responsive web interfaces and improve user experience across products.",
+    "eligibility": "B.Tech, BCA or MCA students",
+    "deadline": "2026-11-30"
+  },
+  {
+    "title": "Python Developer Intern",
+    "company": "Quantum Byte Systems",
+    "domain": "Python Development",
+    "location": "Bengaluru",
+    "work_type": "Hybrid",
+    "duration": "4 Months",
+    "stipend": 15000,
+    "skills": ["Python", "Flask", "REST APIs"],
+    "description": "Build backend services, automate repetitive tasks, and support API development for internal business tools.",
+    "eligibility": "Any graduate in CS/IT with Python fundamentals",
+    "deadline": "2026-12-05"
+  },
+  {
+    "title": "Data Science Intern",
+    "company": "Insight Horizon",
+    "domain": "Data Science",
+    "location": "Remote",
+    "work_type": "Remote",
+    "duration": "6 Months",
+    "stipend": 18000,
+    "skills": ["Python", "Pandas", "SQL"],
+    "description": "Analyze datasets, translate business questions into data products, and support model evaluation for growth strategy.",
+    "eligibility": "Students pursuing statistics, data science or computer science",
+    "deadline": "2026-12-12"
+  },
+  {
+    "title": "Machine Learning Intern",
+    "company": "Crest AI Works",
+    "domain": "Machine Learning",
+    "location": "Hyderabad",
+    "work_type": "On-site",
+    "duration": "5 Months",
+    "stipend": 22000,
+    "skills": ["Python", "Scikit-learn", "TensorFlow"],
+    "description": "Help build predictive models, experiment with ML pipelines, and validate model performance with real-world data.",
+    "eligibility": "B.Tech or M.Tech students in AI/ML or related fields",
+    "deadline": "2026-12-15"
+  },
+  {
+    "title": "AI Research Intern",
+    "company": "Orchid Cognitive Labs",
+    "domain": "Artificial Intelligence",
+    "location": "Pune",
+    "work_type": "Hybrid",
+    "duration": "6 Months",
+    "stipend": 25000,
+    "skills": ["Python", "Deep Learning", "NLP"],
+    "description": "Explore AI research ideas, build prototypes, and contribute to experiments on language and decision systems.",
+    "eligibility": "Students with strong programming and research interest",
+    "deadline": "2026-11-20"
+  },
+  {
+    "title": "UI/UX Design Intern",
+    "company": "Pixel Bloom Studio",
+    "domain": "UI/UX Design",
+    "location": "Remote",
+    "work_type": "Remote",
+    "duration": "3 Months",
+    "stipend": 10000,
+    "skills": ["Figma", "Wireframing", "Research"],
+    "description": "Create user-centered interface designs, support prototyping activities, and refine product experience flows.",
+    "eligibility": "Design students or graduates with portfolio experience",
+    "deadline": "2026-12-03"
+  }
+]

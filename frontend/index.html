@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f8fc">
+    <meta
+      name="description"
+      content="Discover thoughtfully curated internships across technology, design, and data."
+    >
+    <title>InternBoard — Find your next internship</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#home" aria-label="InternBoard home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M5 8.5 16 3l11 5.5v15L16 29 5 23.5v-15Z" fill="currentColor" opacity=".16"/>
+              <path d="m5 8.5 11 5.7 11-5.7M16 14.2V29M5 8.5l11-5.5 11 5.5v15L16 29 5 23.5v-15Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="m11.3 7.2 10.9 5.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span>Intern<span class="brand-accent">Board</span></span>
+        </a>
+
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-navigation"
+          aria-label="Open navigation menu"
+        >
+          <span></span><span></span><span></span>
+        </button>
+
+        <nav class="primary-navigation" id="primary-navigation" aria-label="Main navigation">
+          <a class="nav-link" href="#home">Home</a>
+          <a class="nav-link" href="#internships">Internships</a>
+          <a class="nav-link" href="#about">About</a>
+          <a class="nav-cta" href="#internships">Explore roles <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="hero-section" id="home" aria-labelledby="hero-title">
+        <div class="hero-decoration hero-decoration-one" aria-hidden="true"></div>
+        <div class="hero-decoration hero-decoration-two" aria-hidden="true"></div>
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> YOUR NEXT CHAPTER STARTS HERE</p>
+            <h1 id="hero-title">Find your next <span>internship.</span></h1>
+            <p class="hero-description">
+              Real-world experience, exciting teams, and a first step toward the career you want.
+              Find a role that fits where you’re headed.
+            </p>
+            <form class="search-form" role="search">
+              <label class="visually-hidden" for="search-input">Search internships, companies, or skills</label>
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/>
+                <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+              <input id="search-input" name="search" type="search" placeholder="Search internships, companies, or skills..." autocomplete="off">
+              <button class="search-button" type="submit">Find internships <span aria-hidden="true">→</span></button>
+            </form>
+            <p class="search-hint">Try “Python”, “design”, or “remote”</p>
+          </div>
+
+          <aside class="hero-note" aria-label="A note for your search">
+            <span class="note-sparkle" aria-hidden="true">✳</span>
+            <p>Good things start<br>with a first step.</p>
+            <span class="note-caption">YOURS IS RIGHT HERE</span>
+            <span class="note-arrow" aria-hidden="true">↘</span>
+          </aside>
+
+          <div class="hero-stats" aria-label="InternBoard opportunities">
+            <div class="stat-item">
+              <span class="stat-number" id="stat-internships">12+</span>
+              <span class="stat-label">Open opportunities</span>
+            </div>
+            <span class="stat-divider" aria-hidden="true"></span>
+            <div class="stat-item">
+              <span class="stat-number" id="stat-companies">12+</span>
+              <span class="stat-label">Growing companies</span>
+            </div>
+            <span class="stat-divider" aria-hidden="true"></span>
+            <div class="stat-item">
+              <span class="stat-number" id="stat-domains">10+</span>
+              <span class="stat-label">Career domains</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="listing-section" id="internships" aria-labelledby="listing-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">MAKE YOUR MOVE</p>
+            <h2 id="listing-title">Opportunities worth exploring</h2>
+            <p class="section-description">A thoughtful place to find the work that gets you going.</p>
+          </div>
+          <label class="sort-control" for="sort-select">
+            <span>Sort by</span>
+            <select id="sort-select" name="sort">
+              <option value="latest">Latest</option>
+              <option value="oldest">Oldest</option>
+              <option value="stipend-high">Highest stipend</option>
+              <option value="stipend-low">Lowest stipend</option>
+              <option value="company-az">Company A–Z</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="listing-layout">
+          <aside class="filter-panel" aria-labelledby="filter-title">
+            <div class="filter-heading">
+              <div>
+                <h3 id="filter-title">Filters</h3>
+                <p>Find your kind of role</p>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 7h16M7 12h10m-7 5h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <div class="filter-fields">
+              <div class="filter-field">
+                <label for="domain-filter">Domain</label>
+                <select id="domain-filter" name="domain">
+                  <option value="">All domains</option>
+                </select>
+              </div>
+              <div class="filter-field">
+                <label for="location-filter">Location</label>
+                <select id="location-filter" name="location">
+                  <option value="">All locations</option>
+                </select>
+              </div>
+              <div class="filter-field">
+                <label for="work-type-filter">Work type</label>
+                <select id="work-type-filter" name="workType">
+                  <option value="">Any work type</option>
+                </select>
+              </div>
+              <div class="filter-field">
+                <label for="stipend-filter">Monthly stipend</label>
+                <select id="stipend-filter" name="stipend">
+                  <option value="">Any stipend</option>
+                  <option value="0-10000">Up to ₹10,000</option>
+                  <option value="10001-20000">₹10,001–₹20,000</option>
+                  <option value="20001-999999">₹20,001 and above</option>
+                </select>
+              </div>
+              <div class="filter-field">
+                <label for="duration-filter">Duration</label>
+                <select id="duration-filter" name="duration">
+                  <option value="">Any duration</option>
+                  <option value="1-3">1–3 months</option>
+                  <option value="4-6">4–6 months</option>
+                  <option value="7-12">7–12 months</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="clear-button" id="clear-filters" type="button">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M4 6h12m-10 0 .7 10h6.6L14 6M8 6V4h4v2m-3 3v4m2-4v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Clear all filters
+            </button>
+          </aside>
+
+          <div class="results-area">
+            <div class="results-toolbar">
+              <p class="result-count" id="result-count" aria-live="polite" aria-atomic="true">Loading internships…</p>
+              <span class="results-note"><span aria-hidden="true">✦</span> Curated for curious minds</span>
+            </div>
+            <div class="status-message" id="loading-state" role="status">Finding opportunities for you…</div>
+            <div class="error-state" id="error-state" role="alert" hidden>
+              <span class="state-icon" aria-hidden="true">!</span>
+              <h3>We couldn’t load internships</h3>
+              <p>Please check that the API is running, then try again.</p>
+              <button class="button-primary" id="retry-load" type="button">Try again</button>
+            </div>
+            <div class="internship-grid" id="internship-grid" aria-label="Internship listings"></div>
+            <div class="empty-state" id="empty-state" hidden>
+              <div class="empty-illustration" aria-hidden="true">
+                <svg viewBox="0 0 80 80" fill="none">
+                  <circle cx="35" cy="35" r="19" stroke="currentColor" stroke-width="3"/>
+                  <path d="m49 49 15 15M28 35h14m-7-7v14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                  <path d="m57 17 2.3 4.7L64 24l-4.7 2.3L57 31l-2.3-4.7L50 24l4.7-2.3L57 17Z" fill="currentColor"/>
+                </svg>
+              </div>
+              <h3>No internships found</h3>
+              <p>Try changing your search or filters. Your next opportunity might be just one tweak away.</p>
+              <button class="button-primary" id="empty-clear-filters" type="button">Clear filters</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-strip" id="about" aria-labelledby="about-title">
+        <div class="about-mark" aria-hidden="true">✳</div>
+        <div>
+          <p class="section-kicker">A GOOD PLACE TO BEGIN</p>
+          <h2 id="about-title">Your first role doesn’t have to be a guessing game.</h2>
+          <p>InternBoard brings early-career opportunities together in one welcoming, easy-to-explore space. Find a team where you can learn, contribute, and grow.</p>
+        </div>
+        <a class="about-link" href="#internships">Explore opportunities <span aria-hidden="true">→</span></a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="#home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="m5 8.5 11 5.7 11-5.7M16 14.2V29M5 8.5l11-5.5 11 5.5v15L16 29 5 23.5v-15Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Intern<span class="brand-accent">Board</span></span>
+      </a>
+      <p>A first step toward something great.</p>
+      <span class="footer-copyright">© <span id="current-year">2026</span> InternBoard · Made for what’s next</span>
+    </footer>
+
+    <dialog class="details-dialog" id="details-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-header">
+        <span class="dialog-label">INTERNSHIP DETAILS</span>
+        <button class="dialog-close" id="dialog-close" type="button" aria-label="Close internship details">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="dialog-content" id="dialog-content"></div>
+    </dialog>
+
+    <form id="application-form" class="application-form" novalidate>
+      <div class="application-header">
+        <div>
+          <p class="section-kicker">APPLICATION</p>
+          <h2 id="application-title">Apply for this internship</h2>
+        </div>
+        <button type="button" class="dialog-close" id="application-close" aria-label="Close application form">×</button>
+      </div>
+      <p class="application-position" id="application-position"></p>
+      <div class="field-grid">
+        <div class="field-group">
+          <label for="internship-id">Internship</label>
+          <input id="internship-id" name="internship_id" type="hidden">
+          <div id="internship-company" class="read-only-value"></div>
+        </div>
+        <div class="field-group">
+          <label for="full-name">Full name</label>
+          <input id="full-name" name="full_name" type="text" maxlength="100" autocomplete="name">
+          <p class="error-message" data-error-for="full_name"></p>
+        </div>
+        <div class="field-group">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email">
+          <p class="error-message" data-error-for="email"></p>
+        </div>
+        <div class="field-group">
+          <label for="phone">Phone</label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel">
+          <p class="error-message" data-error-for="phone"></p>
+        </div>
+        <div class="field-group">
+          <label for="education">Education</label>
+          <input id="education" name="education" type="text">
+          <p class="error-message" data-error-for="education"></p>
+        </div>
+        <div class="field-group">
+          <label for="college">College</label>
+          <input id="college" name="college" type="text" maxlength="150">
+          <p class="error-message" data-error-for="college"></p>
+        </div>
+        <div class="field-group full-width">
+          <label for="resume-url">Resume URL</label>
+          <input id="resume-url" name="resume_url" type="url" placeholder="https://...">
+          <p class="error-message" data-error-for="resume_url"></p>
+        </div>
+        <div class="field-group full-width">
+          <label for="cover-message">Cover message</label>
+          <textarea id="cover-message" name="cover_message" rows="5" maxlength="1000"></textarea>
+          <p class="error-message" data-error-for="cover_message"></p>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="secondary-button" id="cancel-application">Cancel</button>
+        <button type="submit" class="button-primary" id="submit-application">Submit application</button>
+      </div>
+      <p id="application-status" class="application-status" aria-live="polite"></p>
+    </form>
+
+    <noscript>
+      <p class="noscript-message">InternBoard needs JavaScript enabled to load and filter internships.</p>
+    </noscript>
+  </body>
+</html>
