@@ -49,6 +49,8 @@ const avatarPalettes = [
 ];
 
 let internships = [];
+let internshipPagination = null;
+let internshipRequest = null;
 let dialogInvoker = null;
 let currentlySelectedInternship = null;
 
@@ -291,7 +293,7 @@ function renderInternships() {
   const count = document.createElement("strong");
   count.textContent = String(results.length);
   const total = document.createElement("strong");
-  total.textContent = String(internships.length);
+  total.textContent = String(internshipPagination?.total ?? internships.length);
   elements.resultCount.append("Showing ", count, " of ", total, " internships");
   elements.emptyState.hidden = results.length > 0;
 }
@@ -413,7 +415,43 @@ function toggleMobileMenu() {
   elements.navigation.classList.toggle("is-open", !isOpen);
 }
 
+function fetchInternships() {
+  if (!internshipRequest) {
+    internshipRequest = fetch(`${API_BASE_URL}/internships`, { cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`Internship data request failed with status ${response.status}`);
+        }
+
+        const payload = await response.json();
+        if (
+          payload?.success !== true ||
+          !Array.isArray(payload.data) ||
+          !payload.pagination ||
+          typeof payload.pagination !== "object" ||
+          !Number.isFinite(payload.pagination.total)
+        ) {
+          throw new Error("Internship API returned an invalid response");
+        }
+
+        return {
+          data: payload.data,
+          pagination: payload.pagination
+        };
+      })
+      .finally(() => {
+        internshipRequest = null;
+      });
+  }
+
+  return internshipRequest;
+}
+
 async function loadInternships() {
+  if (internshipRequest) {
+    return internshipRequest;
+  }
+
   elements.loadingState.hidden = false;
   elements.errorState.hidden = true;
   elements.emptyState.hidden = true;
@@ -421,38 +459,33 @@ async function loadInternships() {
   elements.resultCount.textContent = "Loading internships…";
   elements.retryLoad.disabled = true;
 
+  let result;
   try {
-    const response = await fetch(`${API_BASE_URL}/internships`, { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error(`Internship data request failed with status ${response.status}`);
-    }
-
-    const payload = await response.json();
-    const data = Array.isArray(payload.data) ? payload.data : [];
-    if (!Array.isArray(data) || data.length === 0) {
-      internships = [];
-      populateFilters();
-      elements.loadingState.hidden = true;
-      elements.emptyState.hidden = false;
-      elements.resultCount.textContent = "No internships found";
-      return;
-    }
-
-    internships = data;
-    populateFilters();
-    document.querySelector("#stat-internships").textContent = `${internships.length}+`;
-    document.querySelector("#stat-companies").textContent = `${new Set(internships.map((item) => item.company)).size}+`;
-    document.querySelector("#stat-domains").textContent = `${new Set(internships.map((item) => item.domain)).size}+`;
-    elements.loadingState.hidden = true;
-    renderInternships();
+    result = await fetchInternships();
   } catch (error) {
     console.error("Unable to load internship data:", error);
+    internships = [];
+    internshipPagination = null;
+    populateFilters();
+    elements.grid.replaceChildren();
     elements.loadingState.hidden = true;
     elements.errorState.hidden = false;
+    elements.emptyState.hidden = true;
     elements.resultCount.textContent = "Internships are unavailable";
+    return;
   } finally {
     elements.retryLoad.disabled = false;
   }
+
+  internships = result.data;
+  internshipPagination = result.pagination;
+  elements.errorState.hidden = true;
+  elements.loadingState.hidden = true;
+  populateFilters();
+  document.querySelector("#stat-internships").textContent = `${internshipPagination.total}+`;
+  document.querySelector("#stat-companies").textContent = `${new Set(internships.map((item) => item.company)).size}+`;
+  document.querySelector("#stat-domains").textContent = `${new Set(internships.map((item) => item.domain)).size}+`;
+  renderInternships();
 }
 
 function setErrorState(input, message) {
