@@ -8,3 +8,4 @@ backend/node_modules/
 **/*.db-wal
 .DS_Store
 coverage/
+.postman
