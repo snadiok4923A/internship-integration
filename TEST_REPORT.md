@@ -1,118 +1,187 @@
-# Test Report
+# Test Report — InternBoard
 
-This report separates tests that were run locally from manual checks
-performed against the deployed application. It does not claim automated
-accessibility, performance, or external security-audit scores that were
-not measured.
+## 1. Overview
 
-## 1. Local Automated Backend Tests
+This document records the automated backend test results and manual verification performed for the InternBoard internship portal.
 
-**Command:** Run from the `backend/` directory.
+**Project:** InternBoard — Internship Portal  
+**Repository:** https://github.com/snadiok4923A/internship-integration  
+**Live Frontend:** https://internship-integration.pages.dev/  
+**Backend API:** https://internship-integration.onrender.com  
+**API Health Check:** https://internship-integration.onrender.com/api/health
 
-``` bash
+The project provides internship listings, search and filtering, pagination, internship details, and application submission through a full-stack web application.
+
+## 2. Local Automated Backend Tests
+
+### Test Command
+
+Run the following command from the `backend/` directory:
+
+```powershell
 npm test
 ```
 
-**Verified outcome:** The final local run after the privacy and dependency changes passed all nine tests.
+The test script runs:
 
-The suite covered:
-
--   Health check
--   Internship listing and pagination
--   Missing internship handling
--   Valid application submission
--   Invalid application validation
--   Rejection of an application for a nonexistent internship
--   Rate-limit behavior
--   Public application lookup is disabled
--   Database adapter interface/placeholder behavior and malformed JSON
-    handling
-
-The test suite is a local automated test. It should be run again after
-future code changes.
-
-## 2. Local API Checks
-
-During local validation, the following requests were used:
-
-``` text
-GET http://localhost:3000/api/health
-GET http://localhost:3000/api/internships?limit=2&page=1
+```text
+node --test --test-isolation=none ../tests/*.test.js
 ```
 
-The health endpoint returned a successful JSON response with
-`success: true`, and the internship endpoint returned pagination data
-and seeded internship records.
+### Final Test Results
+
+| Metric | Result |
+|---|---:|
+| Total tests | 9 |
+| Passed | 9 |
+| Failed | 0 |
+| Cancelled | 0 |
+| Skipped | 0 |
+| Todo | 0 |
+| Duration | Approximately 1.95 seconds |
+| Overall status | PASS |
+
+**Result:** All nine tests passed in the latest recorded local test run.
+
+### Test Coverage
+
+| Test Area | Expected Behaviour | Result |
+|---|---|---|
+| Database adapter | Provides a common query interface and PostgreSQL placeholder support | PASS |
+| API health check | Returns a successful response when the API is running | PASS |
+| Malformed JSON | Returns a consistent error for malformed application request data | PASS |
+| Internship listing | Returns paginated internship results | PASS |
+| Missing internship | Returns HTTP 404 for a nonexistent internship | PASS |
+| Application validation | Accepts valid application data and rejects invalid input | PASS |
+| Nonexistent internship application | Returns HTTP 404 when the internship does not exist | PASS |
+| Application privacy | Public `GET /api/applications/:id` lookup is unavailable | PASS |
+| Rate limiting | Returns HTTP 429 when the request limit is exceeded | PASS |
+
+These results are based on the latest local `npm test` output.
 
 ## 3. Production Deployment Checks
 
-The following checks were completed against the currently deployed services:
+### Backend Health Check
 
-| Check | Result |
-| --- | --- |
-| Cloudflare Pages frontend deployed | Verified |
-| Render backend service live | Verified |
-| `GET /api/health` | Returned success and `database: "connected"` |
-| `GET /api/internships?limit=2&page=1` | Returned HTTP 200 with seeded records |
-| Public `GET /api/applications/1` | **Still exposed a private record on the old deployed revision; redeploy required** |
+**URL:** https://internship-integration.onrender.com/api/health
 
-Production URLs:
+The live endpoint returned a successful response indicating that the API was running and the database connection was established.
 
--   Frontend: https://internship-integration.pages.dev/
--   API health: https://internship-integration.onrender.com/api/health
--   Internship API:
-    https://internship-integration.onrender.com/api/internships?limit=2&page=1
+Observed response fields included:
 
-The application table showed submitted records during earlier manual
-verification. The current local code disables public application lookup,
-but the production service must be redeployed before that protection is
-active online.
+```json
+{
+  "success": true,
+  "message": "Internship API is running",
+  "database": "connected"
+}
+```
 
-## 4. Database Verification
+The timestamp is omitted because it changes with each request.
 
-The production database is Neon PostgreSQL, selected by setting
-`DATABASE_URL` in Render. The `internships` table contained six seeded
-records. The `applications` table contained submitted application
-records.
+**Status:** PASS
 
-The local SQLite database and its records are not automatically migrated
-to Neon. PostgreSQL connectivity was verified through the deployed
-Render health endpoint rather than by using production credentials in
-the local test environment.
+### Public Application Lookup Security Check
+
+**URL:** https://internship-integration.onrender.com/api/applications/1
+
+The live endpoint returned:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ROUTE_NOT_FOUND",
+    "message": "Route not found: /api/applications/1"
+  }
+}
+```
+
+The public application lookup route is unavailable, preventing this endpoint from returning application records.
+
+**Status:** PASS
+
+### Frontend Availability
+
+**URL:** https://internship-integration.pages.dev/
+
+The deployed frontend loaded successfully and displayed internship listings and the application form.
+
+**Status:** PASS
+
+### Application Submission
+
+The frontend displayed the success message:
+
+> Application submitted successfully. We'll be in touch soon.
+
+This confirms that the frontend displayed the submission success state during manual testing. Database persistence for that specific submission was not independently verified as part of this check.
+
+**Status:** Success message observed; independent persistence verification pending.
+
+## 4. Security Checks
+
+The following security-related behaviours were verified or documented:
+
+- The public application lookup endpoint is unavailable.
+- Server-side application validation rejects invalid input.
+- Malformed JSON requests receive an error response.
+- API rate limiting returns HTTP 429 when the request limit is exceeded.
+- The API health endpoint reports database connectivity.
+- CORS is configured using the `FRONTEND_URL` environment variable.
+- Environment variables are used for sensitive configuration.
+- The security documentation describes known limitations.
+
+These checks do not constitute an independent penetration test or a comprehensive security audit.
 
 ## 5. Manual Checks Still Recommended
 
-The following checks should be performed and recorded before final
-submission:
+The following checks should be completed before treating the project as fully verified:
 
--   [ ] Search and filters on the live website
--   [ ] View Details and application form behavior
--   [ ] Required-field and invalid-input messages
--   [ ] Responsive layout on desktop and mobile
--   [ ] Keyboard-only navigation and visible focus
--   [ ] Browser console free of unexpected errors
--   [ ] Check CORS behavior from the deployed frontend
--   [ ] Confirm duplicate-submission behavior if the product is expected
-    to prevent duplicates
--   [x] Run `npm test` again after the final code changes
--   [ ] Redeploy Render and verify `GET /api/applications/1` returns
-    `404 ROUTE_NOT_FOUND`
+- [ ] Test internship search and all available filters.
+- [ ] Test internship details and navigation.
+- [ ] Test application form validation for missing and invalid fields.
+- [ ] Submit a test application and independently confirm its database record.
+- [ ] Check responsive layouts on mobile and desktop.
+- [ ] Test keyboard navigation and visible focus indicators.
+- [ ] Inspect browser developer tools for console errors.
+- [ ] Confirm the frontend communicates with the deployed backend without CORS errors.
+- [ ] Run an accessibility check using an appropriate tool such as axe.
+- [ ] Run a performance audit using Lighthouse.
+- [ ] Perform an appropriate security review.
+- [ ] Record and publish the project walkthrough video.
 
-## 6. Accessibility, Performance, and Security
+No accessibility, performance, or external security audit scores are claimed in this report because those audits have not been recorded here.
 
-The frontend includes labelled controls, visible focus styles, skip
-navigation, keyboard-friendly dialogs, and live status regions. These
-are implementation features, not a substitute for measured accessibility
-results.
+## 6. Test Environment
 
-No Lighthouse or axe score is claimed here because those scores were not
-measured. No independent penetration test or external security audit has
-been completed.
+| Component | Environment |
+|---|---|
+| Backend runtime | Node.js |
+| Backend framework | Express |
+| Automated testing | Node.js built-in test runner |
+| Local database support | SQLite |
+| Production database | Neon PostgreSQL |
+| Backend hosting | Render |
+| Frontend hosting | Cloudflare Pages |
+| Source control | Git and GitHub |
 
-## 7. Summary
+The automated test results refer to the local test run. Production checks refer only to the specific live behaviours listed in this document.
 
-The nine-test backend suite passed in the final local run. The deployed
-health and internship endpoints were verified, but the live Render
-service still exposes the old public application lookup route until the
-new revision is deployed. Do not treat production as remediated until
-that redeploy and endpoint check are complete.
+## 7. Known Limitations
+
+- Render's free instance may spin down during inactivity, causing delayed responses on the next request.
+- The project has not been independently audited for production security.
+- Accessibility and performance audit scores have not been recorded.
+- Manual regression checks remain necessary after future code changes.
+- A successful frontend message alone does not independently prove database persistence.
+
+## 8. Conclusion
+
+The latest recorded local backend test run completed successfully, with **9 tests passed and 0 failed**.
+
+The deployed API health check reported that the database was connected. The public application lookup endpoint returned `ROUTE_NOT_FOUND`, and the live frontend displayed internship listings and the application form.
+
+The project has a working deployment and a passing automated backend test suite. Completing the remaining manual checks and publishing the walkthrough video will improve the final submission.
+
+**Report status:** Automated tests passed; selected production checks passed; additional quality checks remain pending.
