@@ -150,7 +150,7 @@ The following checks are recommended to improve the completeness of the project 
 - [ ] Run an accessibility check using an appropriate tool such as axe.
 - [ ] Run a performance audit using Lighthouse.
 - [ ] Perform an appropriate security review.
-- [ ] Verify that the published walkthrough video is accessible to reviewers.
+- [ ] - [x] Publish the project walkthrough video: https://youtu.be/NZU1yMqdoPY
 
 No accessibility, performance, or external security audit scores are claimed in this report because those audits have not been recorded here.
 
