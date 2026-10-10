@@ -1,10 +1,10 @@
 const { db, parseRow } = require('../config/database');
 
-function createApplication(req, res, next) {
+async function createApplication(req, res, next) {
   const { internship_id, full_name, email, phone, education, college, resume_url, cover_message } = req.body;
 
   try {
-    const internshipExists = db.prepare('SELECT id FROM internships WHERE id = ?').get(Number(internship_id));
+    const internshipExists = await db.get('SELECT id FROM internships WHERE id = ?', [Number(internship_id)]);
 
     if (!internshipExists) {
       return next({
@@ -14,7 +14,7 @@ function createApplication(req, res, next) {
       });
     }
 
-    const insertStatement = db.prepare(`
+    const result = await db.get(`
       INSERT INTO applications (
         internship_id,
         full_name,
@@ -25,9 +25,8 @@ function createApplication(req, res, next) {
         resume_url,
         cover_message
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    const result = insertStatement.run(
+      RETURNING id
+    `, [
       Number(internship_id),
       String(full_name).trim(),
       String(email).trim(),
@@ -36,12 +35,12 @@ function createApplication(req, res, next) {
       String(college).trim(),
       String(resume_url).trim(),
       String(cover_message).trim()
-    );
+    ]);
 
     return res.status(201).json({
       success: true,
       data: {
-        id: result.lastInsertRowid,
+        id: result.id,
         message: 'Application submitted successfully'
       }
     });
@@ -54,7 +53,7 @@ function createApplication(req, res, next) {
   }
 }
 
-function getApplicationById(req, res, next) {
+async function getApplicationById(req, res, next) {
   const applicationId = Number(req.params.id);
 
   if (!Number.isInteger(applicationId) || applicationId <= 0) {
@@ -66,7 +65,7 @@ function getApplicationById(req, res, next) {
   }
 
   try {
-    const application = db.prepare('SELECT * FROM applications WHERE id = ?').get(applicationId);
+    const application = await db.get('SELECT * FROM applications WHERE id = ?', [applicationId]);
 
     if (!application) {
       return next({

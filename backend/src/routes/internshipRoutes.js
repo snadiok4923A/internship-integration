@@ -7,13 +7,14 @@ const {
   deleteInternship
 } = require('../controllers/internshipController');
 const { internshipRules, validateInternship } = require('../validators/internshipValidator');
+const asyncHandler = require('../middleware/asyncHandler');
 
 const router = express.Router();
 
-router.get('/', getAllInternships);
-router.get('/:id', getInternshipById);
-router.post('/', internshipRules, validateInternship, createInternship);
-router.put('/:id', internshipRules, validateInternship, updateInternship);
-router.delete('/:id', deleteInternship);
+router.get('/', asyncHandler(getAllInternships));
+router.get('/:id', asyncHandler(getInternshipById));
+router.post('/', internshipRules, validateInternship, asyncHandler(createInternship));
+router.put('/:id', internshipRules, validateInternship, asyncHandler(updateInternship));
+router.delete('/:id', asyncHandler(deleteInternship));
 
 module.exports = router;

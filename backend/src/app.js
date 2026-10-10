@@ -8,6 +8,7 @@ const { apiLimiter, applicationLimiter } = require('./middleware/rateLimiter');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 const { checkDatabaseConnection } = require('./config/database');
+const asyncHandler = require('./middleware/asyncHandler');
 
 function createApp() {
   const app = express();
@@ -51,9 +52,9 @@ function createApp() {
 
   app.use('/api', apiLimiter);
 
-  app.get('/api/health', (req, res) => {
+  app.get('/api/health', asyncHandler(async (req, res) => {
     try {
-      checkDatabaseConnection();
+      await checkDatabaseConnection();
       return res.status(200).json({
         success: true,
         message: 'Internship API is running',
@@ -71,7 +72,7 @@ function createApp() {
         timestamp: new Date().toISOString()
       });
     }
-  });
+  }));
 
   app.use('/api/internships', internshipRoutes);
   app.use('/api/applications', applicationLimiter, applicationRoutes);

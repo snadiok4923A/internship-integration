@@ -27,7 +27,7 @@ function normalizePaginationQuery(req, fallbackLimit = 10) {
   };
 }
 
-function getAllInternships(req, res, next) {
+async function getAllInternships(req, res, next) {
   try {
     const { page, limit } = normalizePaginationQuery(req);
     const filters = [];
@@ -53,7 +53,7 @@ function getAllInternships(req, res, next) {
       totalQuery += ` WHERE ${filters.join(' AND ')}`;
     }
 
-    const totalResult = db.prepare(totalQuery).get(...params);
+    const totalResult = await db.get(totalQuery, params);
     const total = Number(totalResult.total || 0);
     const totalPages = total === 0 ? 0 : Math.ceil(total / limit);
     const offset = (page - 1) * limit;
@@ -64,7 +64,7 @@ function getAllInternships(req, res, next) {
     }
     query += ' ORDER BY id ASC LIMIT ? OFFSET ?';
 
-    const internships = db.prepare(query).all(...params, limit, offset).map(parseRow);
+    const internships = (await db.all(query, [...params, limit, offset])).map(parseRow);
 
     return res.status(200).json({
       success: true,
@@ -89,7 +89,7 @@ function getAllInternships(req, res, next) {
   }
 }
 
-function getInternshipById(req, res, next) {
+async function getInternshipById(req, res, next) {
   const internshipId = Number(req.params.id);
 
   if (!Number.isInteger(internshipId) || internshipId <= 0) {
@@ -101,7 +101,7 @@ function getInternshipById(req, res, next) {
   }
 
   try {
-    const internship = parseRow(db.prepare('SELECT * FROM internships WHERE id = ?').get(internshipId));
+    const internship = parseRow(await db.get('SELECT * FROM internships WHERE id = ?', [internshipId]));
 
     if (!internship) {
       return next({
@@ -124,14 +124,14 @@ function getInternshipById(req, res, next) {
   }
 }
 
-function createInternship(req, res, next) {
+async function createInternship(req, res, next) {
   const { title, company, domain, location, work_type, duration, stipend, skills, description, eligibility, deadline } = req.body;
   const cleanedSkills = Array.isArray(skills)
     ? skills.map((skill) => String(skill).trim()).filter(Boolean)
     : [];
 
   try {
-    const insertStatement = db.prepare(`
+    const result = await db.get(`
       INSERT INTO internships (
         title,
         company,
@@ -147,9 +147,8 @@ function createInternship(req, res, next) {
         created_at,
         updated_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    `);
-
-    const result = insertStatement.run(
+      RETURNING id
+    `, [
       String(title).trim(),
       String(company).trim(),
       String(domain).trim(),
@@ -161,9 +160,9 @@ function createInternship(req, res, next) {
       String(description).trim(),
       String(eligibility).trim(),
       deadline || null
-    );
+    ]);
 
-    const savedInternship = parseRow(db.prepare('SELECT * FROM internships WHERE id = ?').get(result.lastInsertRowid));
+    const savedInternship = parseRow(await db.get('SELECT * FROM internships WHERE id = ?', [result.id]));
 
     return res.status(201).json({
       success: true,
@@ -178,7 +177,7 @@ function createInternship(req, res, next) {
   }
 }
 
-function updateInternship(req, res, next) {
+async function updateInternship(req, res, next) {
   const internshipId = Number(req.params.id);
 
   if (!Number.isInteger(internshipId) || internshipId <= 0) {
@@ -189,23 +188,22 @@ function updateInternship(req, res, next) {
     });
   }
 
-  const existingInternship = db.prepare('SELECT * FROM internships WHERE id = ?').get(internshipId);
-
-  if (!existingInternship) {
-    return next({
-      statusCode: 404,
-      code: 'INTERNSHIP_NOT_FOUND',
-      message: 'Internship not found'
-    });
-  }
-
   const { title, company, domain, location, work_type, duration, stipend, skills, description, eligibility, deadline } = req.body;
   const cleanedSkills = Array.isArray(skills)
     ? skills.map((skill) => String(skill).trim()).filter(Boolean)
     : [];
 
   try {
-    const updateStatement = db.prepare(`
+    const existingInternship = await db.get('SELECT * FROM internships WHERE id = ?', [internshipId]);
+    if (!existingInternship) {
+      return next({
+        statusCode: 404,
+        code: 'INTERNSHIP_NOT_FOUND',
+        message: 'Internship not found'
+      });
+    }
+
+    await db.run(`
       UPDATE internships
       SET title = ?,
           company = ?,
@@ -220,9 +218,7 @@ function updateInternship(req, res, next) {
           deadline = ?,
           updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
-    `);
-
-    updateStatement.run(
+    `, [
       String(title).trim(),
       String(company).trim(),
       String(domain).trim(),
@@ -235,9 +231,9 @@ function updateInternship(req, res, next) {
       String(eligibility).trim(),
       deadline || null,
       internshipId
-    );
+    ]);
 
-    const updatedInternship = parseRow(db.prepare('SELECT * FROM internships WHERE id = ?').get(internshipId));
+    const updatedInternship = parseRow(await db.get('SELECT * FROM internships WHERE id = ?', [internshipId]));
 
     return res.status(200).json({
       success: true,
@@ -252,7 +248,7 @@ function updateInternship(req, res, next) {
   }
 }
 
-function deleteInternship(req, res, next) {
+async function deleteInternship(req, res, next) {
   const internshipId = Number(req.params.id);
 
   if (!Number.isInteger(internshipId) || internshipId <= 0) {
@@ -264,7 +260,7 @@ function deleteInternship(req, res, next) {
   }
 
   try {
-    const result = db.prepare('DELETE FROM internships WHERE id = ?').run(internshipId);
+    const result = await db.run('DELETE FROM internships WHERE id = ?', [internshipId]);
 
     if (result.changes === 0) {
       return next({

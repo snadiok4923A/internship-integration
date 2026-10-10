@@ -1,10 +1,19 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const app = require('../backend/src/app');
-const { closeDatabase } = require('../backend/src/config/database');
+const { db, closeDatabase, toPostgresPlaceholders } = require('../backend/src/config/database');
 
 test.after(() => {
   closeDatabase();
+});
+
+test('database adapter exposes a common query interface and PostgreSQL placeholders', async () => {
+  assert.equal(db.kind, 'sqlite');
+  assert.equal((await db.get('SELECT ? AS value', ['adapter'])).value, 'adapter');
+  assert.equal(
+    toPostgresPlaceholders('SELECT * FROM internships WHERE domain = ? AND location = ?'),
+    'SELECT * FROM internships WHERE domain = $1 AND location = $2'
+  );
 });
 
 async function startServer() {

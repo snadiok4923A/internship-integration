@@ -16,8 +16,12 @@ function shutdown(signal) {
       process.exitCode = 1;
     }
 
-    closeDatabase();
-    process.exit();
+    closeDatabase()
+      .catch((closeError) => {
+        console.error('Database shutdown failed:', closeError.message);
+        process.exitCode = 1;
+      })
+      .finally(() => process.exit());
   });
 }
 

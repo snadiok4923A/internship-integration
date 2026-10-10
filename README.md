@@ -1,10 +1,10 @@
 # Internship Integration Project
 
-This project is a production-ready capstone iteration of an internship portal: a responsive static frontend consumes an Express API backed by SQLite. It preserves the existing Task 02–04 architecture while adding stronger reliability, observability, accessibility, and deployment documentation.
+This project is a production-ready capstone iteration of an internship portal: a responsive static frontend consumes an Express API backed by SQLite locally or PostgreSQL in production. It preserves the existing Task 02–04 architecture while adding stronger reliability, observability, accessibility, and deployment documentation.
 
 ## Project structure
 
-- `backend/` — Express API, SQLite schema, validations, and middleware
+- `backend/` — Express API, SQLite/PostgreSQL database adapter, schemas, validations, and middleware
 - `frontend/` — static internship board UI that fetches data from the API
 - `tests/` — Node test suite covering the core API behaviors
 
@@ -13,7 +13,8 @@ This project is a production-ready capstone iteration of an internship portal: a
 - Internship listing with search, filtering, sorting, and pagination
 - Loading, empty, and error states in the UI
 - Secure application form submission with frontend and backend validation
-- SQLite persistence with seeded internship records
+- SQLite persistence with seeded internship records for local development
+- PostgreSQL/Neon support for production using `DATABASE_URL`
 - Helmet, CORS, rate limiting, and environment-based config
 - Safe DOM rendering, keyboard-friendly dialogs, accessible form errors, and retry states
 - Database-aware health checks, request logging, and graceful shutdown
@@ -51,6 +52,14 @@ This project is a production-ready capstone iteration of an internship portal: a
    ```
 
 5. Serve `frontend/` with a local static server. The checked-in local configuration points to `http://localhost:3000/api` for VS Code Live Server. For deployment, replace the `api-base-url` meta tag in `frontend/index.html` with the actual backend URL plus `/api`.
+
+## Database configuration
+
+Local development uses SQLite and preserves `backend/database/internships.db`.
+
+For production, set `DATABASE_URL` to the Neon connection string. When that variable is present, the backend selects PostgreSQL, creates the PostgreSQL tables from `backend/database/schema.postgres.sql`, and seeds the six records from `backend/data/seed.json` if the `internships` table is empty.
+
+Never commit `.env` or paste the Neon connection string into frontend files. Use `backend/.env.example` as the configuration template.
 
 ## API endpoints
 
@@ -91,13 +100,13 @@ The tests validate health checks, internship retrieval, invalid IDs, application
 
 ## Deployment
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for hosting, API URL configuration, SQLite persistence, environment variables, troubleshooting, and the walkthrough recording checklist. No live URL or video URL is listed until it is actually deployed and verified.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for Cloudflare Pages, Render Free, Neon PostgreSQL, API URL configuration, environment variables, troubleshooting, and the walkthrough recording checklist. No live URL or video URL is listed until it is actually deployed and verified.
 
 ## Documentation and limitations
 
 - [SECURITY.md](SECURITY.md) documents the implemented controls and remaining production risks.
 - [TEST_REPORT.md](TEST_REPORT.md) records commands that were actually executed.
-- SQLite requires persistent storage in production, and the in-memory rate limiter is not shared across multiple instances.
+- Neon PostgreSQL is the recommended production database, and the in-memory rate limiter is not shared across multiple instances.
 
 ## Notes
 
