@@ -4,7 +4,7 @@
 
 The application has a static frontend and an Express API backed by SQLite. For a simple production deployment, host the frontend on a static host and the API on a Node.js host with a persistent disk. SQLite must not be stored on an ephemeral filesystem.
 
-For a small deployment, a Node host that supports persistent volumes (for example, Render with a paid persistent disk) can run the backend. A static host can serve `frontend/`. If the frontend and backend share one origin, keep the default `/api` value in the API URL meta tag. If they use different origins, update `frontend/index.html`:
+For a small deployment, a Node host that supports persistent volumes (for example, Render with a paid persistent disk) can run the backend. A static host can serve `frontend/`. The checked-in frontend configuration targets `http://localhost:3000/api` for local VS Code Live Server use. If the frontend and backend use different production origins, update `frontend/index.html`:
 
 ```html
 <meta name="api-base-url" content="https://api.example.com/api">

@@ -50,7 +50,7 @@ This project is a production-ready capstone iteration of an internship portal: a
    npm run dev
    ```
 
-5. Serve `frontend/` with a local static server. The default API URL is `/api`; for a separate local frontend server, set the `api-base-url` meta tag in `frontend/index.html` to `http://localhost:3000/api`.
+5. Serve `frontend/` with a local static server. The checked-in local configuration points to `http://localhost:3000/api` for VS Code Live Server. For deployment, replace the `api-base-url` meta tag in `frontend/index.html` with the actual backend URL plus `/api`.
 
 ## API endpoints
 
