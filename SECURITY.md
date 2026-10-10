@@ -1,43 +1,92 @@
 # Security Overview
 
-This project follows a basic security baseline for a beginner-friendly internship portal. It is not a substitute for a production security review.
+InternBoard is an educational full-stack capstone project with a basic
+security baseline. This document describes implemented controls and
+known limitations. It is not a substitute for an independent production
+security review.
 
-## Implemented controls
+## Implemented Controls
 
-- Helmet is enabled to add standard HTTP security headers.
-- CORS is restricted to the exact comma-separated origins in `FRONTEND_URL`.
-- Request validation is enforced on the server using `express-validator` for all application submissions.
-- SQLite database access uses parameterized queries instead of string-concatenated SQL.
-- PostgreSQL uses the `pg` pool with numbered parameter placeholders and never interpolates user values into SQL.
-- Production PostgreSQL connections use TLS settings compatible with Neon.
-- API and application routes are rate-limited to reduce abuse and brute-force activity.
-- Sensitive values such as ports and frontend origins are stored in `.env` instead of being hardcoded.
-- The project ignores generated files such as `.env`, database files, and `node_modules` in `.gitignore`.
-- Request outcomes and unexpected server errors are logged without application form contents.
-- Error responses hide stack traces and internal database details.
-- JSON request bodies are limited to 1 MB and malformed JSON receives a consistent error response.
+-   Helmet adds standard HTTP security headers.
+-   CORS is restricted using the configured `FRONTEND_URL` origin
+    allowlist.
+-   Application submissions are validated on the server with
+    `express-validator`.
+-   SQLite queries use parameterized statements.
+-   PostgreSQL queries use parameter placeholders rather than
+    interpolating user input into SQL.
+-   PostgreSQL connections use TLS settings compatible with Neon.
+-   API routes and application submissions use rate limiting.
+-   Environment-based configuration is used for sensitive settings.
+-   `.env`, generated database files, and `node_modules` are excluded
+    from version control through ignore rules.
+-   Request outcomes and unexpected server errors are logged without
+    logging full application form contents.
+-   Error responses avoid exposing stack traces and internal database
+    details.
+-   JSON request bodies are limited to 1 MB and malformed JSON is
+    handled consistently.
+-   The health endpoint reports database connectivity.
+-   The server includes graceful-shutdown handling for database
+    connections.
 
-## Checklist
+## Security Checklist
 
-- [x] Secure headers enabled
-- [x] Restricted CORS policy
-- [x] Input validation for form data
-- [x] Parameterized database queries
-- [x] Rate limiting enabled
-- [x] Environment-based configuration
-- [x] Secrets excluded from version control
-- [x] Production API URL is configurable without exposing server secrets
-- [x] Health check includes database connectivity
-- [x] Graceful shutdown closes the SQLite connection
-- [x] Graceful shutdown closes the configured database connection
+-   [x] Security headers enabled
+-   [x] Restricted CORS configuration
+-   [x] Server-side application input validation
+-   [x] Parameterized database queries
+-   [x] Rate limiting enabled
+-   [x] Environment-based configuration
+-   [x] Secrets excluded from source control
+-   [x] Production API URL configured without exposing server secrets
+-   [x] Database-aware health check
+-   [x] Graceful database connection shutdown
+-   [x] Generic client-facing error messages
 
-## Limitations and production hardening
+## Deployment Security
 
-This setup is appropriate for a small educational project. Before handling sensitive or high-volume applications:
+-   The frontend is served over HTTPS by Cloudflare Pages.
+-   The API is served over HTTPS by Render.
+-   The production database is hosted by Neon PostgreSQL.
+-   `DATABASE_URL` must remain in Render's environment configuration.
+    Never place it in frontend JavaScript, HTML, README files,
+    screenshots, or public issues.
+-   `FRONTEND_URL` should match the production Cloudflare Pages origin
+    exactly.
+-   If the database password or connection string is exposed, rotate the
+    credential in Neon and update Render.
 
-- Serve both frontend and API over HTTPS and configure a trusted reverse proxy.
-- Replace the in-memory rate limiter with a shared store when running more than one API instance.
-- Add authentication and authorization for administrative internship and application endpoints; the current public application lookup endpoint is not suitable for confidential production records.
-- Use a managed database or a persistent, encrypted SQLite volume with backups.
-- Store `DATABASE_URL` only in Render/Neon environment configuration and rotate it if exposed.
-- Add automated dependency scanning, centralized log retention, alerting, CSRF protection if cookie authentication is introduced, and an external security review.
+## Known Limitations and Recommended Hardening
+
+This application has not undergone an independent security audit. Before
+handling real or sensitive applicant information, address the following:
+
+1.  **Application record access:** The current public application lookup
+    endpoint is not suitable for confidential production records without
+    authentication and authorization. Restrict or remove it until
+    appropriate access controls are implemented.
+2.  **Administrative actions:** Add authentication and role-based
+    authorization before exposing any administrative internship or
+    application management functions.
+3.  **Rate limiting:** The current in-memory limiter is not shared
+    across multiple instances. Use a shared store if scaling beyond one
+    process.
+4.  **Monitoring:** Add centralized log retention, alerting, and
+    operational monitoring appropriate to the deployment.
+5.  **Dependency scanning:** Run dependency audits regularly and update
+    vulnerable packages.
+6.  **Security review:** Perform an external review before using real
+    applicant data.
+7.  **CSRF:** If cookie-based authentication is introduced, review CSRF
+    protection and cookie settings.
+8.  **Data handling:** Define retention, deletion, backup, and access
+    policies for application records.
+9.  **Database credentials:** Use least-privilege database credentials
+    where practical and rotate credentials if exposure is suspected.
+
+## Responsible Use
+
+Use synthetic test applicant data while demonstrating the project. Avoid
+sharing screenshots containing names, email addresses, phone numbers,
+database credentials, or other private information.
