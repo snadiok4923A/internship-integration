@@ -1,6 +1,11 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const app = require('../backend/src/app');
+const { closeDatabase } = require('../backend/src/config/database');
+
+test.after(() => {
+  closeDatabase();
+});
 
 async function startServer() {
   return new Promise((resolve) => {

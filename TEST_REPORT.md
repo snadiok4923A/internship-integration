@@ -58,7 +58,8 @@ The backend API is running successfully, the SQLite database is seeded with inte
 ## Task 05 validation notes
 
 - The initial baseline run passed 6 tests, 0 failed.
-- The isolated final run passed 7 tests, including malformed JSON handling; 0 failed.
+- The final standard `npm test` command now runs with `--test-isolation=none` and passed all 7 tests, including malformed JSON handling, across five consecutive runs.
+- The explicit `node --test --test-isolation=none ..\tests\api.test.js` command also passed all 7 tests.
 - The frontend uses safe DOM APIs for API data and has visible focus styles, skip navigation, labelled controls, keyboard-closeable dialogs, and live status regions.
 - No Lighthouse or axe runner is installed in this repository, so numeric accessibility and performance scores are not claimed.
 - No live deployment or walkthrough video was available during this local run. Follow [DEPLOYMENT.md](DEPLOYMENT.md) for the remaining manual steps.
