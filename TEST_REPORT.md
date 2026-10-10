@@ -1,66 +1,118 @@
 # Test Report
 
-This report documents only the commands and results that were verified during validation.
+This report separates tests that were run locally from manual checks
+performed against the deployed application. It does not claim automated
+accessibility, performance, or external security-audit scores that were
+not measured.
 
-## Verified commands and outcomes
+## 1. Local Automated Backend Tests
 
-### Backend health and internship retrieval
+**Command:** Run from the `backend/` directory.
 
-Command run:
-
-```bash
-curl.exe -sS http://localhost:3000/api/health && echo; curl.exe -sS "http://localhost:3000/api/internships?limit=2&page=1"
+``` bash
+npm test
 ```
 
-Verified result:
+**Verified outcome:** All eight tests passed in the final local run.
 
-- `/api/health` returned a successful JSON response with `success: true`
-- `/api/internships?limit=2&page=1` returned a valid pagination object with `page: 1`, `limit: 2`, and seeded internship data
+The suite covered:
 
-### Database seed validation
+-   Health check
+-   Internship listing and pagination
+-   Missing internship handling
+-   Valid application submission
+-   Invalid application validation
+-   Rejection of an application for a nonexistent internship
+-   Rate-limit behavior
+-   Database adapter interface/placeholder behavior and malformed JSON
+    handling
 
-Command run:
+The test suite is a local automated test. It should be run again after
+future code changes.
 
-```bash
-Set-Location 'c:\Users\Sandipan Paul\Documents\Websites\temp3\internship-integration\backend'; node -e "const {db}=require('./src/config/database'); console.log(db.prepare('SELECT COUNT(*) AS total FROM internships').get().total); console.log(JSON.stringify(db.prepare('SELECT id,title,company FROM internships ORDER BY id LIMIT 3').all()));"
+## 2. Local API Checks
+
+During local validation, the following requests were used:
+
+``` text
+GET http://localhost:3000/api/health
+GET http://localhost:3000/api/internships?limit=2&page=1
 ```
 
-Verified result:
+The health endpoint returned a successful JSON response with
+`success: true`, and the internship endpoint returned pagination data
+and seeded internship records.
 
-- SQLite database contains `6` seed records
-- The first three seeded internships were returned successfully
+## 3. Production Deployment Checks
 
-### Automated test suite
+The following manual checks were completed after deployment:
 
-Command run:
+  Check                                                       Result
+  ----------------------------------------------------------- ----------------------------------------------
+  Cloudflare Pages frontend deployed                          Passed
+  Render backend service live                                 Passed
+  `GET /api/health`                                           Returned success and `database: "connected"`
+  Live frontend loaded internship cards                       Passed
+  Application form showed successful submission message       Passed
+  Neon `public.internships` table contained six records       Passed
+  Neon `public.applications` table showed submitted records   Passed
 
-```bash
-Set-Location 'c:\Users\Sandipan Paul\Documents\Websites\temp3\internship-integration\backend'; npm test
-```
+Production URLs:
 
-Verified result:
+-   Frontend: https://internship-integration.pages.dev/
+-   API health: https://internship-integration.onrender.com/api/health
+-   Internship API:
+    https://internship-integration.onrender.com/api/internships?limit=2&page=1
 
-- The Node test suite passed successfully
-- Covered status codes included `200`, `201`, `400`, `404`, and `429`
-- Verified the following behaviors:
-  - health check
-  - internship listing with pagination
-  - missing internship error handling
-  - valid application submission
-  - invalid application validation
-  - nonexistent internship rejection
-  - rate limiting activation
+The application table showed two submitted records during manual
+verification. This confirms records were visible in the database at that
+time; it does not by itself verify duplicate-submission prevention.
 
-## Summary
+## 4. Database Verification
 
-The backend API is running successfully, the SQLite database is seeded with internship records, and the actual automated tests confirm the core integration flows behave as expected.
+The production database is Neon PostgreSQL, selected by setting
+`DATABASE_URL` in Render. The `internships` table contained six seeded
+records. The `applications` table contained submitted application
+records.
 
-## Task 05 validation notes
+The local SQLite database and its records are not automatically migrated
+to Neon. PostgreSQL connectivity was verified through the deployed
+Render health endpoint rather than by using production credentials in
+the local test environment.
 
-- The initial baseline run passed 6 tests, 0 failed.
-- The final standard `npm test` command runs with `--test-isolation=none` and passed all 8 tests, including the adapter interface/placeholder test and malformed JSON handling.
-- The explicit `node --test --test-isolation=none ..\tests\api.test.js` command also passed all 8 tests.
-- PostgreSQL connectivity was not tested against Neon locally because no database credentials were available; the adapter's PostgreSQL placeholder translation is covered without requiring credentials.
-- The frontend uses safe DOM APIs for API data and has visible focus styles, skip navigation, labelled controls, keyboard-closeable dialogs, and live status regions.
-- No Lighthouse or axe runner is installed in this repository, so numeric accessibility and performance scores are not claimed.
-- No live deployment or walkthrough video was available during this local run. Follow [DEPLOYMENT.md](DEPLOYMENT.md) for the remaining manual steps.
+## 5. Manual Checks Still Recommended
+
+The following checks should be performed and recorded before final
+submission:
+
+-   [ ] Search and filters on the live website
+-   [ ] View Details and application form behavior
+-   [ ] Required-field and invalid-input messages
+-   [ ] Responsive layout on desktop and mobile
+-   [ ] Keyboard-only navigation and visible focus
+-   [ ] Browser console free of unexpected errors
+-   [ ] Check CORS behavior from the deployed frontend
+-   [ ] Confirm duplicate-submission behavior if the product is expected
+    to prevent duplicates
+-   [ ] Run `npm test` again after the final code changes
+
+## 6. Accessibility, Performance, and Security
+
+The frontend includes labelled controls, visible focus styles, skip
+navigation, keyboard-friendly dialogs, and live status regions. These
+are implementation features, not a substitute for measured accessibility
+results.
+
+No Lighthouse or axe score is claimed here because those scores were not
+measured. No independent penetration test or external security audit has
+been completed.
+
+## 7. Summary
+
+The eight-test backend suite passed in the final local run. The deployed
+frontend and backend were manually verified, the health endpoint
+reported a connected PostgreSQL database, the live website displayed
+internship listings, and application records were visible in Neon.
+Additional manual accessibility, performance, security, and regression
+checks remain recommended before treating the project as
+production-hardened.
