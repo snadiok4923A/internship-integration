@@ -4,12 +4,12 @@
 
 This document records the automated backend test results and manual verification performed for the InternBoard internship portal.
 
-- **Project:** InternBoard — Internship Portal
-- **Repository:** https://github.com/snadiok4923A/internship-integration
-- **Live Frontend:** https://internship-integration.pages.dev/
-- **Backend API:** https://internship-integration.onrender.com
-- **API Health Check:** https://internship-integration.onrender.com/api/health
-- **Walkthrough Video:** https://youtu.be/NZU1yMqdoPY
+**Project:** InternBoard — Internship Portal  
+**Repository:** https://github.com/snadiok4923A/internship-integration  
+**Live Frontend:** https://internship-integration.pages.dev/  
+**Backend API:** https://internship-integration.onrender.com  
+**API Health Check:** https://internship-integration.onrender.com/api/health  
+**Walkthrough Video:** https://youtu.be/NZU1yMqdoPY
 
 The project provides internship listings, search and filtering, pagination, internship details, and application submission through a full-stack web application.
 
@@ -19,20 +19,20 @@ The project provides internship listings, search and filtering, pagination, inte
 
 Run the following command from the `backend/` directory:
 
-```powershell
+```bash
 npm test
 ```
 
 The test script runs:
 
-```text
+```bash
 node --test --test-isolation=none ../tests/*.test.js
 ```
 
 ### Final Test Results
 
 | Metric | Result |
-|---|---:|
+|---|---|
 | Total tests | 9 |
 | Passed | 9 |
 | Failed | 0 |
@@ -129,7 +129,7 @@ The following security-related behaviours were verified or documented:
 - Malformed JSON requests receive an error response.
 - API rate limiting returns HTTP 429 when the request limit is exceeded.
 - The API health endpoint reports database connectivity.
-- CORS is configured using the `FRONTEND_URL` environment variable.
+- CORS is configured using the `FRONTEND_URL` environment variable, as documented in the project configuration.
 - Environment variables are used for sensitive configuration.
 - The security documentation describes known limitations.
 
@@ -137,7 +137,9 @@ These checks do not constitute an independent penetration test or a comprehensiv
 
 ## 5. Manual Checks and Remaining Work
 
-The following checks are recommended to improve the completeness of the project verification:
+The following checks are recommended to improve the completeness of the project verification.
+
+### Pending Checks
 
 - [ ] Test internship search and all available filters.
 - [ ] Test internship details and navigation.
@@ -150,7 +152,10 @@ The following checks are recommended to improve the completeness of the project 
 - [ ] Run an accessibility check using an appropriate tool such as axe.
 - [ ] Run a performance audit using Lighthouse.
 - [ ] Perform an appropriate security review.
-- [ ] - [x] Publish the project walkthrough video: https://youtu.be/NZU1yMqdoPY
+
+### Completed Item
+
+- [x] Publish the project walkthrough video: https://youtu.be/NZU1yMqdoPY
 
 No accessibility, performance, or external security audit scores are claimed in this report because those audits have not been recorded here.
 
@@ -179,7 +184,7 @@ The automated test results refer to the local test run. Production checks refer 
 
 ## 8. Conclusion
 
-The latest recorded local backend test run completed successfully, with **9 tests passed and 0 failed**.
+The latest recorded local backend test run completed successfully, with 9 tests passed and 0 failed.
 
 The deployed API health check reported that the database was connected. The public application lookup endpoint returned `ROUTE_NOT_FOUND`, and the live frontend displayed internship listings and the application form.
 
