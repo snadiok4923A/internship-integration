@@ -4,11 +4,12 @@
 
 This document records the automated backend test results and manual verification performed for the InternBoard internship portal.
 
-**Project:** InternBoard — Internship Portal  
-**Repository:** https://github.com/snadiok4923A/internship-integration  
-**Live Frontend:** https://internship-integration.pages.dev/  
-**Backend API:** https://internship-integration.onrender.com  
-**API Health Check:** https://internship-integration.onrender.com/api/health
+- **Project:** InternBoard — Internship Portal
+- **Repository:** https://github.com/snadiok4923A/internship-integration
+- **Live Frontend:** https://internship-integration.pages.dev/
+- **Backend API:** https://internship-integration.onrender.com
+- **API Health Check:** https://internship-integration.onrender.com/api/health
+- **Walkthrough Video:** https://youtu.be/NZU1yMqdoPY
 
 The project provides internship listings, search and filtering, pagination, internship details, and application submission through a full-stack web application.
 
@@ -57,11 +58,11 @@ node --test --test-isolation=none ../tests/*.test.js
 | Application privacy | Public `GET /api/applications/:id` lookup is unavailable | PASS |
 | Rate limiting | Returns HTTP 429 when the request limit is exceeded | PASS |
 
-These results are based on the latest local `npm test` output.
+These results are based on the latest recorded local `npm test` output.
 
 ## 3. Production Deployment Checks
 
-### Backend Health Check
+### 3.1 Backend Health Check
 
 **URL:** https://internship-integration.onrender.com/api/health
 
@@ -81,7 +82,7 @@ The timestamp is omitted because it changes with each request.
 
 **Status:** PASS
 
-### Public Application Lookup Security Check
+### 3.2 Public Application Lookup Security Check
 
 **URL:** https://internship-integration.onrender.com/api/applications/1
 
@@ -101,7 +102,7 @@ The public application lookup route is unavailable, preventing this endpoint fro
 
 **Status:** PASS
 
-### Frontend Availability
+### 3.3 Frontend Availability
 
 **URL:** https://internship-integration.pages.dev/
 
@@ -109,9 +110,9 @@ The deployed frontend loaded successfully and displayed internship listings and 
 
 **Status:** PASS
 
-### Application Submission
+### 3.4 Application Submission
 
-The frontend displayed the success message:
+The frontend displayed the following success message during manual testing:
 
 > Application submitted successfully. We'll be in touch soon.
 
@@ -134,9 +135,9 @@ The following security-related behaviours were verified or documented:
 
 These checks do not constitute an independent penetration test or a comprehensive security audit.
 
-## 5. Manual Checks Still Recommended
+## 5. Manual Checks and Remaining Work
 
-The following checks should be completed before treating the project as fully verified:
+The following checks are recommended to improve the completeness of the project verification:
 
 - [ ] Test internship search and all available filters.
 - [ ] Test internship details and navigation.
@@ -149,7 +150,7 @@ The following checks should be completed before treating the project as fully ve
 - [ ] Run an accessibility check using an appropriate tool such as axe.
 - [ ] Run a performance audit using Lighthouse.
 - [ ] Perform an appropriate security review.
-- [ ] Record and publish the project walkthrough video.
+- [ ] Verify that the published walkthrough video is accessible to reviewers.
 
 No accessibility, performance, or external security audit scores are claimed in this report because those audits have not been recorded here.
 
@@ -182,6 +183,6 @@ The latest recorded local backend test run completed successfully, with **9 test
 
 The deployed API health check reported that the database was connected. The public application lookup endpoint returned `ROUTE_NOT_FOUND`, and the live frontend displayed internship listings and the application form.
 
-The project has a working deployment and a passing automated backend test suite. Completing the remaining manual checks and publishing the walkthrough video will improve the final submission.
+The project has a working deployment and a passing automated backend test suite. The walkthrough video has been published, and the remaining manual checks are documented above.
 
 **Report status:** Automated tests passed; selected production checks passed; additional quality checks remain pending.
