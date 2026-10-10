@@ -53,42 +53,6 @@ async function createApplication(req, res, next) {
   }
 }
 
-async function getApplicationById(req, res, next) {
-  const applicationId = Number(req.params.id);
-
-  if (!Number.isInteger(applicationId) || applicationId <= 0) {
-    return next({
-      statusCode: 400,
-      code: 'INVALID_ID',
-      message: 'Application ID must be a positive integer'
-    });
-  }
-
-  try {
-    const application = await db.get('SELECT * FROM applications WHERE id = ?', [applicationId]);
-
-    if (!application) {
-      return next({
-        statusCode: 404,
-        code: 'APPLICATION_NOT_FOUND',
-        message: 'Application not found'
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      data: application
-    });
-  } catch (error) {
-    return next({
-      statusCode: 500,
-      code: 'DATABASE_ERROR',
-      message: 'Failed to fetch application'
-    });
-  }
-}
-
 module.exports = {
-  createApplication,
-  getApplicationById
+  createApplication
 };

@@ -23,34 +23,27 @@ Live URLs:
 
 The Render service is configured as follows:
 
-  Setting          Value
-  ---------------- ---------------------------------------
-  Service type     Web Service
-  Repository       `snadiok4923A/internship-integration`
-  Branch           `main`
-  Root directory   `backend/`
-  Build command    `npm install`
-  Start command    `npm start`
-  Runtime          Node.js
-  Instance         Free
+| Setting | Value |
+| --- | --- |
+| Service type | Web Service |
+| Repository | `snadiok4923A/internship-integration` |
+| Branch | `main` |
+| Root directory | `backend/` |
+| Build command | `npm install` |
+| Start command | `npm start` |
+| Runtime | Node.js |
+| Instance | Free |
 
 ### Environment variables
 
 Configure these in the Render service's Environment page:
 
-  --------------------------------------------------------------------------------
-  Variable                            Value/purpose
-  ----------------------------------- --------------------------------------------
-  `NODE_ENV`                          `production`
-
-  `DATABASE_URL`                      Pooled Neon PostgreSQL connection string;
-                                      keep secret
-
-  `FRONTEND_URL`                      `https://internship-integration.pages.dev`
-
-  `PORT`                              Supplied by Render; the application should
-                                      use `process.env.PORT`
-  --------------------------------------------------------------------------------
+| Variable | Value/purpose |
+| --- | --- |
+| `NODE_ENV` | `production` |
+| `DATABASE_URL` | Pooled Neon PostgreSQL connection string; keep secret |
+| `FRONTEND_URL` | `https://internship-integration.pages.dev` |
+| `PORT` | Supplied by Render; the application uses `process.env.PORT` |
 
 `FRONTEND_URL` must exactly match the deployed frontend origin,
 including the scheme. Do not add a trailing slash unless the application
@@ -100,22 +93,14 @@ Do not set `DATABASE_PATH` for production PostgreSQL.
 The Cloudflare Pages project is connected to the existing GitHub
 repository.
 
-  -----------------------------------------------------------------------
-  Setting                             Value
-  ----------------------------------- -----------------------------------
-  Project name                        `internship-integration`
-
-  Production branch                   `main`
-
-  Root directory/path                 Repository root (`/`, left blank in
-                                      the dashboard)
-
-  Framework preset                    `None`
-
-  Build command                       `exit 0`
-
-  Build output directory              `frontend`
-  -----------------------------------------------------------------------
+| Setting | Value |
+| --- | --- |
+| Project name | `internship-integration` |
+| Production branch | `main` |
+| Root directory/path | Repository root (`/`, left blank in the dashboard) |
+| Framework preset | `None` |
+| Build command | `exit 0` |
+| Build output directory | `frontend` |
 
 The frontend's production configuration in `frontend/index.html` must
 contain:

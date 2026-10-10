@@ -13,7 +13,7 @@ not measured.
 npm test
 ```
 
-**Verified outcome:** All eight tests passed in the final local run.
+**Verified outcome:** The final local run after the privacy and dependency changes passed all nine tests.
 
 The suite covered:
 
@@ -24,6 +24,7 @@ The suite covered:
 -   Invalid application validation
 -   Rejection of an application for a nonexistent internship
 -   Rate-limit behavior
+-   Public application lookup is disabled
 -   Database adapter interface/placeholder behavior and malformed JSON
     handling
 
@@ -45,17 +46,15 @@ and seeded internship records.
 
 ## 3. Production Deployment Checks
 
-The following manual checks were completed after deployment:
+The following checks were completed against the currently deployed services:
 
-  Check                                                       Result
-  ----------------------------------------------------------- ----------------------------------------------
-  Cloudflare Pages frontend deployed                          Passed
-  Render backend service live                                 Passed
-  `GET /api/health`                                           Returned success and `database: "connected"`
-  Live frontend loaded internship cards                       Passed
-  Application form showed successful submission message       Passed
-  Neon `public.internships` table contained six records       Passed
-  Neon `public.applications` table showed submitted records   Passed
+| Check | Result |
+| --- | --- |
+| Cloudflare Pages frontend deployed | Verified |
+| Render backend service live | Verified |
+| `GET /api/health` | Returned success and `database: "connected"` |
+| `GET /api/internships?limit=2&page=1` | Returned HTTP 200 with seeded records |
+| Public `GET /api/applications/1` | **Still exposed a private record on the old deployed revision; redeploy required** |
 
 Production URLs:
 
@@ -64,9 +63,10 @@ Production URLs:
 -   Internship API:
     https://internship-integration.onrender.com/api/internships?limit=2&page=1
 
-The application table showed two submitted records during manual
-verification. This confirms records were visible in the database at that
-time; it does not by itself verify duplicate-submission prevention.
+The application table showed submitted records during earlier manual
+verification. The current local code disables public application lookup,
+but the production service must be redeployed before that protection is
+active online.
 
 ## 4. Database Verification
 
@@ -94,7 +94,9 @@ submission:
 -   [ ] Check CORS behavior from the deployed frontend
 -   [ ] Confirm duplicate-submission behavior if the product is expected
     to prevent duplicates
--   [ ] Run `npm test` again after the final code changes
+-   [x] Run `npm test` again after the final code changes
+-   [ ] Redeploy Render and verify `GET /api/applications/1` returns
+    `404 ROUTE_NOT_FOUND`
 
 ## 6. Accessibility, Performance, and Security
 
@@ -109,10 +111,8 @@ been completed.
 
 ## 7. Summary
 
-The eight-test backend suite passed in the final local run. The deployed
-frontend and backend were manually verified, the health endpoint
-reported a connected PostgreSQL database, the live website displayed
-internship listings, and application records were visible in Neon.
-Additional manual accessibility, performance, security, and regression
-checks remain recommended before treating the project as
-production-hardened.
+The nine-test backend suite passed in the final local run. The deployed
+health and internship endpoints were verified, but the live Render
+service still exposes the old public application lookup route until the
+new revision is deployed. Do not treat production as remediated until
+that redeploy and endpoint check are complete.

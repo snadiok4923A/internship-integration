@@ -177,6 +177,21 @@ test('POST /api/applications returns 404 when internship does not exist', async 
         cover_message: 'I am excited to contribute to this internship and would love to learn from the team.'
       })
     });
+
+    test('GET /api/applications/:id is not publicly available', async () => {
+      const { server, port } = await startServer();
+
+      try {
+        const response = await fetch(`http://127.0.0.1:${port}/api/applications/1`);
+        const payload = await response.json();
+
+        assert.equal(response.status, 404);
+        assert.equal(payload.success, false);
+        assert.equal(payload.error.code, 'ROUTE_NOT_FOUND');
+      } finally {
+        await closeServer(server);
+      }
+    });
     const payload = await response.json();
 
     assert.equal(response.status, 404);

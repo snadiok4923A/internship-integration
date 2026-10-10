@@ -62,10 +62,10 @@ security review.
 This application has not undergone an independent security audit. Before
 handling real or sensitive applicant information, address the following:
 
-1.  **Application record access:** The current public application lookup
-    endpoint is not suitable for confidential production records without
-    authentication and authorization. Restrict or remove it until
-    appropriate access controls are implemented.
+1.  **Application record access:** Public application lookup is disabled.
+    No API route returns applicant names, email addresses, phone numbers,
+    resumes, cover messages, or other application records. Any future
+    administrative lookup must require authentication and authorization.
 2.  **Administrative actions:** Add authentication and role-based
     authorization before exposing any administrative internship or
     application management functions.

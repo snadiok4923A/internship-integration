@@ -210,26 +210,12 @@ environment variables.
 
 ## API Endpoints
 
-  -------------------------------------------------------------------------
-  Method                  Endpoint                  Purpose
-  ----------------------- ------------------------- -----------------------
-  `GET`                   `/api/health`             Health check and
-                                                    database connectivity
-
-  `GET`                   `/api/internships`        List internships with
-                                                    supported filters and
-                                                    pagination
-
-  `GET`                   `/api/internships/:id`    Fetch a single
-                                                    internship
-
-  `POST`                  `/api/applications`       Submit an application
-
-  `GET`                   `/api/applications/:id`   Fetch an application
-                                                    record, subject to the
-                                                    project's current
-                                                    access controls
-  -------------------------------------------------------------------------
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/health` | Health check and database connectivity |
+| `GET` | `/api/internships` | List internships with supported filters and pagination |
+| `GET` | `/api/internships/:id` | Fetch a single internship |
+| `POST` | `/api/applications` | Submit an application |
 
 Example requests:
 
@@ -258,11 +244,12 @@ Run the backend test suite from the `backend/` directory:
 npm test
 ```
 
-The test suite was run locally and all eight tests passed. Coverage
+The test suite is run locally with the Node.js test runner. The final
+local run passed nine tests. Coverage
 included health checks, internship listing and pagination, missing
 internship handling, valid and invalid application submission, rejection
-for a nonexistent internship, rate limiting, and adapter/error-handling
-cases.
+for a nonexistent internship, rate limiting, private application route
+protection, and adapter/error-handling cases.
 
 See [TEST_REPORT.md](TEST_REPORT.md) for the distinction between local
 automated tests and manual production checks.
@@ -286,9 +273,9 @@ access controls.
     the first request after inactivity.
 -   The current rate limiter is in-memory and is not shared between
     multiple server instances.
--   The application lookup endpoint needs authentication and
-    authorization before it is appropriate for confidential production
-    records.
+-   Public application lookup is disabled. Any future administrative
+    lookup must require authentication and authorization before it is
+    implemented.
 -   Automated Lighthouse/axe scores and an external security audit have
     not been claimed.
 -   A walkthrough video is not linked here until it has been recorded,
