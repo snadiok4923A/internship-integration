@@ -1,113 +1,310 @@
-# Internship Integration Project
+# InternBoard --- Internship Portal
 
-This project is a production-ready capstone iteration of an internship portal: a responsive static frontend consumes an Express API backed by SQLite locally or PostgreSQL in production. It preserves the existing Task 02–04 architecture while adding stronger reliability, observability, accessibility, and deployment documentation.
+InternBoard is a full-stack internship portal built as a
+production-ready capstone project. It provides a responsive interface
+for discovering internship opportunities and submitting applications.
 
-## Project structure
+## Live Links
 
-- `backend/` — Express API, SQLite/PostgreSQL database adapter, schemas, validations, and middleware
-- `frontend/` — static internship board UI that fetches data from the API
-- `tests/` — Node test suite covering the core API behaviors
+-   **Live website:** https://internship-integration.pages.dev/
+-   **Backend API:** https://internship-integration.onrender.com
+-   **API health check:**
+    https://internship-integration.onrender.com/api/health
+-   **GitHub repository:**
+    https://github.com/snadiok4923A/internship-integration
+
+The live website has been deployed to Cloudflare Pages, the Express API
+is hosted on Render, and production data is stored in Neon PostgreSQL.
+The health endpoint was verified to return a successful response with
+the database connected. Internship listings loaded on the live website,
+and application submission displayed a success message. Submitted
+application records were also visible in the Neon `applications` table.
 
 ## Features
 
-- Internship listing with search, filtering, sorting, and pagination
-- Loading, empty, and error states in the UI
-- Secure application form submission with frontend and backend validation
-- SQLite persistence with seeded internship records for local development
-- PostgreSQL/Neon support for production using `DATABASE_URL`
-- Helmet, CORS, rate limiting, and environment-based config
-- Safe DOM rendering, keyboard-friendly dialogs, accessible form errors, and retry states
-- Database-aware health checks, request logging, and graceful shutdown
+-   Browse internship opportunities from the API.
+-   Search and filter internships by supported fields such as domain,
+    location, and work type.
+-   View internship details.
+-   Submit applications through a form with frontend and backend
+    validation.
+-   Display loading, empty, error, retry, and success states.
+-   Paginated internship API results.
+-   SQLite database support for local development.
+-   Neon PostgreSQL support for production through `DATABASE_URL`.
+-   Health endpoint that reports application and database status.
+-   Request logging, security headers, CORS configuration, and rate
+    limiting.
+-   Accessible interface features including labelled controls, visible
+    focus styles, skip navigation, keyboard-friendly dialogs, and live
+    status regions.
 
-## Prerequisites
+## Technology Stack
 
-- Node.js 18+
-- npm
+### Frontend
 
-## Setup
+-   HTML
+-   CSS
+-   JavaScript
+-   Cloudflare Pages
 
-1. Open a terminal in `backend/`.
-2. Copy the example environment file:
+### Backend
 
-   ```bash
-   copy .env.example .env
-   ```
+-   Node.js
+-   Express
+-   `express-validator`
+-   `helmet`
+-   `cors`
+-   Rate limiting middleware
 
-3. Install dependencies:
+### Database
 
-   ```bash
-   npm install
-   ```
+-   SQLite for local development
+-   PostgreSQL hosted by Neon for production
+-   `pg` PostgreSQL client
 
-4. Start the API:
+### Testing and Hosting
 
-   ```bash
-   npm start
-   ```
+-   Node.js test runner
+-   Render for the backend API
+-   Cloudflare Pages for the static frontend
+-   GitHub for source control and deployment integration
 
-   or for automatic restart during development:
+## Project Structure
 
-   ```bash
-   npm run dev
-   ```
+``` text
+internship-integration/
+├── backend/
+│   ├── data/
+│   │   └── seed.json
+│   ├── database/
+│   │   ├── schema.postgres.sql
+│   │   └── internships.db       # local generated database, if present
+│   ├── src/
+│   │   ├── config/
+│   │   ├── middleware/
+│   │   └── server.js
+│   ├── tests/
+│   ├── .env.example
+│   └── package.json
+├── frontend/
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
+├── DEPLOYMENT.md
+├── SECURITY.md
+├── TEST_REPORT.md
+└── README.md
+```
 
-5. Serve `frontend/` with a local static server. The checked-in local configuration points to `http://localhost:3000/api` for VS Code Live Server. For deployment, replace the `api-base-url` meta tag in `frontend/index.html` with the actual backend URL plus `/api`.
+The exact files inside `backend/src/` may vary as the project evolves.
 
-## Database configuration
+## Run Locally
 
-Local development uses SQLite and preserves `backend/database/internships.db`.
+### Requirements
 
-For production, set `DATABASE_URL` to the Neon connection string. When that variable is present, the backend selects PostgreSQL, creates the PostgreSQL tables from `backend/database/schema.postgres.sql`, and seeds the six records from `backend/data/seed.json` if the `internships` table is empty.
+-   Node.js 18 or later
+-   npm
+-   Git
 
-Never commit `.env` or paste the Neon connection string into frontend files. Use `backend/.env.example` as the configuration template.
+### 1. Clone the repository
 
-## API endpoints
+``` bash
+git clone https://github.com/snadiok4923A/internship-integration.git
+cd internship-integration
+```
 
-- `GET /api/health` — health check
-- `GET /api/internships` — list internships with pagination and filters
-- `GET /api/internships/:id` — fetch a single internship
-- `POST /api/applications` — apply for an internship
-- `GET /api/applications/:id` — fetch an application record
+### 2. Configure the backend
 
-Health responses include `database: "connected"` when SQLite is available. Unexpected server errors return a generic message and are logged server-side.
+``` bash
+cd backend
+```
 
-### Query parameters
+Copy the example environment file:
 
-- `page` — page number, must be >= 1
-- `limit` — items per page, 1–50
-- `domain` — exact domain filter
-- `location` — exact location filter
-- `work_type` — exact work type filter
+**Windows PowerShell**
 
-## Security notes
+``` powershell
+Copy-Item .env.example .env
+```
 
-- `helmet` adds standard HTTP security headers
-- `cors` allows only the configured local origins
-- `express-validator` checks required form fields and URL/email formats
-- SQLite queries use parameterized statements
-- Rate limiting is enabled for general API traffic and application submissions
-- Sensitive configuration is loaded from `.env`, not hardcoded in source files
+**Windows Command Prompt**
+
+``` cmd
+copy .env.example .env
+```
+
+Review `.env.example` and set local values if required. Do not commit
+`.env` or place secrets in frontend files.
+
+### 3. Install backend dependencies
+
+``` bash
+npm install
+```
+
+### 4. Start the API
+
+``` bash
+npm start
+```
+
+If the project has a development script, you can use `npm run dev` for
+automatic restarts.
+
+### 5. Serve the frontend
+
+Open a second terminal and serve the `frontend/` directory using VS Code
+Live Server or another static web server. The frontend configuration
+must point to the local API when developing locally, for example:
+
+``` html
+<meta name="api-base-url" content="http://localhost:3000/api">
+```
+
+Use the actual port configured by your local backend.
+
+## Production Architecture
+
+``` text
+Browser
+  |
+  v
+Cloudflare Pages
+Static frontend: frontend/
+  |
+  | HTTPS API requests
+  v
+Render
+Node.js + Express API
+  |
+  | DATABASE_URL
+  v
+Neon PostgreSQL
+Production tables: internships, applications
+```
+
+### Production URLs
+
+-   Frontend: `https://internship-integration.pages.dev/`
+-   API base URL: `https://internship-integration.onrender.com/api`
+-   Health: `https://internship-integration.onrender.com/api/health`
+
+The production `api-base-url` meta tag in `frontend/index.html` should
+point to the Render API base URL above. Do not use a localhost URL in
+the deployed frontend.
+
+## Database Behavior
+
+-   Local development uses SQLite when `DATABASE_URL` is not configured.
+-   Production uses PostgreSQL when `DATABASE_URL` is present.
+-   The backend initializes the PostgreSQL schema and seeds the six
+    internship records when the `internships` table is empty.
+-   Neon is the production database. The local SQLite database is not
+    automatically migrated to Neon.
+-   Existing application records from a local SQLite database must be
+    migrated separately if they are needed in production.
+
+Never commit or share the Neon connection string. Keep it in Render
+environment variables.
+
+## API Endpoints
+
+  -------------------------------------------------------------------------
+  Method                  Endpoint                  Purpose
+  ----------------------- ------------------------- -----------------------
+  `GET`                   `/api/health`             Health check and
+                                                    database connectivity
+
+  `GET`                   `/api/internships`        List internships with
+                                                    supported filters and
+                                                    pagination
+
+  `GET`                   `/api/internships/:id`    Fetch a single
+                                                    internship
+
+  `POST`                  `/api/applications`       Submit an application
+
+  `GET`                   `/api/applications/:id`   Fetch an application
+                                                    record, subject to the
+                                                    project's current
+                                                    access controls
+  -------------------------------------------------------------------------
+
+Example requests:
+
+``` text
+GET https://internship-integration.onrender.com/api/health
+GET https://internship-integration.onrender.com/api/internships?limit=2&page=1
+```
+
+The health endpoint should return HTTP 200 and a JSON response
+containing `success: true` and `database: "connected"` when the database
+is reachable.
+
+### Internship query parameters
+
+-   `page` --- page number, at least `1`
+-   `limit` --- number of results per page, from `1` to `50`
+-   `domain` --- exact domain filter
+-   `location` --- exact location filter
+-   `work_type` --- exact work type filter
 
 ## Testing
 
-Run the project test suite from `backend/`:
+Run the backend test suite from the `backend/` directory:
 
-```bash
+``` bash
 npm test
 ```
 
-The tests validate health checks, internship retrieval, invalid IDs, application validation, missing internships, and rate limiting behavior.
+The test suite was run locally and all eight tests passed. Coverage
+included health checks, internship listing and pagination, missing
+internship handling, valid and invalid application submission, rejection
+for a nonexistent internship, rate limiting, and adapter/error-handling
+cases.
+
+See [TEST_REPORT.md](TEST_REPORT.md) for the distinction between local
+automated tests and manual production checks.
 
 ## Deployment
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for Cloudflare Pages, Render Free, Neon PostgreSQL, API URL configuration, environment variables, troubleshooting, and the walkthrough recording checklist. No live URL or video URL is listed until it is actually deployed and verified.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for the actual Cloudflare Pages,
+Render, and Neon configuration and troubleshooting steps.
 
-## Documentation and limitations
+## Security
 
-- [SECURITY.md](SECURITY.md) documents the implemented controls and remaining production risks.
-- [TEST_REPORT.md](TEST_REPORT.md) records commands that were actually executed.
-- Neon PostgreSQL is the recommended production database, and the in-memory rate limiter is not shared across multiple instances.
+See [SECURITY.md](SECURITY.md) for implemented safeguards and remaining
+hardening work. This is an educational capstone project and has not
+undergone an independent security audit. Do not use it to store
+sensitive applicant data without further security review and appropriate
+access controls.
 
-## Notes
+## Known Limitations
 
-This project intentionally keeps the original Task 02 and Task 03 codebases unchanged. The Task 04 implementation is a separate project directory with its own backend and frontend.
+-   Render's free service may sleep when inactive, causing a delay on
+    the first request after inactivity.
+-   The current rate limiter is in-memory and is not shared between
+    multiple server instances.
+-   The application lookup endpoint needs authentication and
+    authorization before it is appropriate for confidential production
+    records.
+-   Automated Lighthouse/axe scores and an external security audit have
+    not been claimed.
+-   A walkthrough video is not linked here until it has been recorded,
+    published, and verified.
+
+## Walkthrough Video
+
+**Status:** Not yet published.
+
+After recording and uploading a walkthrough, add the verified public or
+view-only video URL here. The video should demonstrate the live portal,
+responsive layout, search and filters, details, form validation,
+successful application submission, API health check, repository
+documentation, and test command.
+
+## Author
+
+Created as a full-stack development capstone project for an internship
+portal.
