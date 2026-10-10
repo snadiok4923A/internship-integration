@@ -1101,6 +1101,18 @@ p {
   color: var(--danger);
 }
 
+.submission-confirmation {
+  width: min(1160px, calc(100% - 64px));
+  margin: 20px auto 0;
+  padding: 14px 18px;
+  border: 1px solid #ccefe3;
+  border-radius: 12px;
+  background: #f1fcf8;
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .form-actions {
   align-items: center;
   justify-content: flex-end;
@@ -1213,7 +1225,8 @@ p {
   .hero-inner,
   .listing-section,
   .about-strip,
-  .site-footer {
+  .site-footer,
+  .submission-confirmation {
     width: min(100% - 24px, 1160px);
   }
 

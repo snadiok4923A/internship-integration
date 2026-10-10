@@ -1,8 +1,27 @@
 require('dotenv').config();
 const app = require('./app');
+const { closeDatabase } = require('./config/database');
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Internship API running on http://localhost:${PORT}`);
+const server = app.listen(PORT, () => {
+  console.info(`Internship API listening on port ${PORT}`);
 });
+
+function shutdown(signal) {
+  console.info(`${signal} received; shutting down gracefully`);
+  server.close((error) => {
+    if (error) {
+      console.error('Server shutdown failed:', error.message);
+      process.exitCode = 1;
+    }
+
+    closeDatabase();
+    process.exit();
+  });
+}
+
+process.once('SIGINT', () => shutdown('SIGINT'));
+process.once('SIGTERM', () => shutdown('SIGTERM'));
+
+module.exports = server;

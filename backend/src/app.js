@@ -7,6 +7,7 @@ const applicationRoutes = require('./routes/applicationRoutes');
 const { apiLimiter, applicationLimiter } = require('./middleware/rateLimiter');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
+const { checkDatabaseConnection } = require('./config/database');
 
 function createApp() {
   const app = express();
@@ -23,12 +24,22 @@ function createApp() {
         return;
       }
 
-      callback(new Error('CORS policy rejected this request'));
+      const error = new Error('Origin is not allowed');
+      error.statusCode = 403;
+      error.code = 'CORS_FORBIDDEN';
+      callback(error);
     },
     credentials: true
   }));
+  app.use((req, res, next) => {
+    const startedAt = Date.now();
+    res.on('finish', () => {
+      console.info(`${req.method} ${req.originalUrl} ${res.statusCode} ${Date.now() - startedAt}ms`);
+    });
+    next();
+  });
   app.use(express.json({ limit: '1mb' }));
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
   app.get('/', (req, res) => {
     return res.status(200).json({
@@ -41,11 +52,25 @@ function createApp() {
   app.use('/api', apiLimiter);
 
   app.get('/api/health', (req, res) => {
-    return res.status(200).json({
-      success: true,
-      message: 'Internship API is running',
-      timestamp: new Date().toISOString()
-    });
+    try {
+      checkDatabaseConnection();
+      return res.status(200).json({
+        success: true,
+        message: 'Internship API is running',
+        database: 'connected',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Health check database failure:', error.message);
+      return res.status(503).json({
+        success: false,
+        error: {
+          code: 'DATABASE_UNAVAILABLE',
+          message: 'The API is temporarily unavailable'
+        },
+        timestamp: new Date().toISOString()
+      });
+    }
   });
 
   app.use('/api/internships', internshipRoutes);

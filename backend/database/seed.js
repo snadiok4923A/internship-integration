@@ -1,10 +1,13 @@
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const Database = require('better-sqlite3');
 
-const databaseDir = path.resolve(__dirname, '..', 'database');
-const databasePath = path.join(databaseDir, 'internships.db');
-const schemaPath = path.join(databaseDir, 'schema.sql');
+const databasePath = process.env.DATABASE_PATH
+  ? path.resolve(process.env.DATABASE_PATH)
+  : path.resolve(__dirname, 'internships.db');
+const databaseDir = path.dirname(databasePath);
+const schemaPath = path.join(__dirname, 'schema.sql');
 const seedDataPath = path.resolve(__dirname, '..', 'data', 'seed.json');
 
 fs.mkdirSync(databaseDir, { recursive: true });

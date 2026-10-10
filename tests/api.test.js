@@ -36,6 +36,26 @@ test('GET /api/health responds with running status', async () => {
     assert.equal(response.status, 200);
     assert.equal(payload.success, true);
     assert.equal(payload.message, 'Internship API is running');
+    assert.equal(payload.database, 'connected');
+  } finally {
+    await closeServer(server);
+  }
+});
+
+test('POST /api/applications returns a consistent error for malformed JSON', async () => {
+  const { server, port } = await startServer();
+
+  try {
+    const response = await fetch(`http://127.0.0.1:${port}/api/applications`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{"internship_id":'
+    });
+    const payload = await response.json();
+
+    assert.equal(response.status, 400);
+    assert.equal(payload.success, false);
+    assert.equal(payload.error.code, 'INVALID_JSON');
   } finally {
     await closeServer(server);
   }

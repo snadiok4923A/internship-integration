@@ -11,7 +11,14 @@ module.exports = function errorHandler(err, req, res, next) {
 
   const statusCode = err.statusCode || 500;
   const code = err.code || 'SERVER_ERROR';
-  const message = err.message || 'Unexpected server error';
+  const isServerError = statusCode >= 500;
+  const message = isServerError
+    ? 'Unexpected server error'
+    : (err.message || 'Unexpected server error');
+
+  if (isServerError) {
+    console.error(`${req.method} ${req.originalUrl} failed:`, err.message || err);
+  }
 
   const response = {
     success: false,

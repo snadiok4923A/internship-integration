@@ -2,9 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const Database = require('better-sqlite3');
 
-const databaseDir = path.resolve(__dirname, '../../database');
-const databasePath = path.join(databaseDir, 'internships.db');
-const schemaPath = path.join(databaseDir, 'schema.sql');
+const configuredDatabasePath = process.env.DATABASE_PATH;
+const databasePath = configuredDatabasePath
+  ? path.resolve(configuredDatabasePath)
+  : path.resolve(__dirname, '../../database/internships.db');
+const databaseDir = path.dirname(databasePath);
+const schemaPath = path.resolve(__dirname, '../../database/schema.sql');
 const seedDataPath = path.resolve(__dirname, '../../data', 'seed.json');
 
 fs.mkdirSync(databaseDir, { recursive: true });
@@ -72,4 +75,21 @@ function parseRow(row) {
   return internship;
 }
 
-module.exports = { db, parseRow, databasePath };
+function checkDatabaseConnection() {
+  db.prepare('SELECT 1 AS ok').get();
+  return true;
+}
+
+function closeDatabase() {
+  if (db.open) {
+    db.close();
+  }
+}
+
+module.exports = {
+  db,
+  parseRow,
+  databasePath,
+  checkDatabaseConnection,
+  closeDatabase
+};

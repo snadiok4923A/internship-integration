@@ -1,6 +1,9 @@
 "use strict";
 
-const API_BASE_URL = "http://localhost:3000/api";
+const configuredApiUrl = document.querySelector('meta[name="api-base-url"]')?.content
+  || window.__API_BASE_URL__
+  || "/api";
+const API_BASE_URL = configuredApiUrl.replace(/\/+$/, "");
 const CURRENCY_FORMATTER = new Intl.NumberFormat("en-IN", {
   style: "currency",
   currency: "INR",
@@ -36,7 +39,8 @@ const elements = {
   internshipCompany: document.querySelector("#internship-company"),
   submitApplicationButton: document.querySelector("#submit-application"),
   cancelApplication: document.querySelector("#cancel-application"),
-  applicationClose: document.querySelector("#application-close")
+  applicationClose: document.querySelector("#application-close"),
+  submissionConfirmation: document.querySelector("#submission-confirmation")
 };
 
 const avatarPalettes = [
@@ -56,6 +60,20 @@ let currentlySelectedInternship = null;
 
 function formatCurrency(amount) {
   return `${CURRENCY_FORMATTER.format(amount)} / mo`;
+}
+
+function setFieldDescribedBy(input, errorElement, message) {
+  if (!input || !errorElement) {
+    return;
+  }
+
+  errorElement.id ||= `${input.id}-error`;
+  input.setAttribute("aria-invalid", String(Boolean(message)));
+  if (message) {
+    input.setAttribute("aria-describedby", errorElement.id);
+  } else {
+    input.removeAttribute("aria-describedby");
+  }
 }
 
 function formatDate(dateString) {
@@ -498,6 +516,7 @@ function setErrorState(input, message) {
   const errorElement = field?.querySelector(".error-message");
   if (errorElement) {
     errorElement.textContent = message || "";
+    setFieldDescribedBy(input, errorElement, message);
   }
   if (input) {
     input.classList.toggle("input-error", Boolean(message));
@@ -511,6 +530,7 @@ function clearFormErrors() {
     const error = elements.applicationForm.querySelector(`[data-error-for="${input.name}"]`);
     if (error) {
       error.textContent = "";
+      setFieldDescribedBy(input, error, "");
     }
   });
 }
@@ -584,6 +604,8 @@ function setApplicationStatus(message, type = "") {
 
 function openApplicationForm(internship) {
   currentlySelectedInternship = internship;
+  elements.submissionConfirmation.hidden = true;
+  elements.submissionConfirmation.textContent = "";
   elements.internshipIdField.value = internship.id;
   elements.internshipCompany.textContent = `${internship.title} at ${internship.company}`;
   elements.applicationPosition.textContent = `Applying for: ${internship.title} | Company: ${internship.company}`;
@@ -650,8 +672,13 @@ async function submitApplication(event) {
       return;
     }
 
-    setApplicationStatus("Application submitted successfully.", "success");
     closeApplicationForm();
+    elements.submissionConfirmation.textContent = "Application submitted successfully. We’ll be in touch soon.";
+    elements.submissionConfirmation.hidden = false;
+    elements.submissionConfirmation.scrollIntoView({ behavior: "smooth", block: "center" });
+    window.setTimeout(() => {
+      elements.submissionConfirmation.hidden = true;
+    }, 7000);
   } catch (error) {
     console.error("Application submission failed:", error);
     setApplicationStatus("Unable to submit your application. Please try again.", "error");

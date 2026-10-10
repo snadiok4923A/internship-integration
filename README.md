@@ -1,6 +1,6 @@
 # Internship Integration Project
 
-This project brings together the internship listing interface and a secure backend API into a single Task 04 application. It keeps the original Task 02 and Task 03 projects untouched while adding a fresh Express + SQLite service and a frontend that consumes it.
+This project is a production-ready capstone iteration of an internship portal: a responsive static frontend consumes an Express API backed by SQLite. It preserves the existing Task 02–04 architecture while adding stronger reliability, observability, accessibility, and deployment documentation.
 
 ## Project structure
 
@@ -15,6 +15,8 @@ This project brings together the internship listing interface and a secure backe
 - Secure application form submission with frontend and backend validation
 - SQLite persistence with seeded internship records
 - Helmet, CORS, rate limiting, and environment-based config
+- Safe DOM rendering, keyboard-friendly dialogs, accessible form errors, and retry states
+- Database-aware health checks, request logging, and graceful shutdown
 
 ## Prerequisites
 
@@ -48,7 +50,7 @@ This project brings together the internship listing interface and a secure backe
    npm run dev
    ```
 
-5. Open the frontend in a browser by serving `frontend/` or using a local static file server. The UI calls the API at `http://localhost:3000/api` by default.
+5. Serve `frontend/` with a local static server. The default API URL is `/api`; for a separate local frontend server, set the `api-base-url` meta tag in `frontend/index.html` to `http://localhost:3000/api`.
 
 ## API endpoints
 
@@ -57,6 +59,8 @@ This project brings together the internship listing interface and a secure backe
 - `GET /api/internships/:id` — fetch a single internship
 - `POST /api/applications` — apply for an internship
 - `GET /api/applications/:id` — fetch an application record
+
+Health responses include `database: "connected"` when SQLite is available. Unexpected server errors return a generic message and are logged server-side.
 
 ### Query parameters
 
@@ -84,6 +88,16 @@ npm test
 ```
 
 The tests validate health checks, internship retrieval, invalid IDs, application validation, missing internships, and rate limiting behavior.
+
+## Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for hosting, API URL configuration, SQLite persistence, environment variables, troubleshooting, and the walkthrough recording checklist. No live URL or video URL is listed until it is actually deployed and verified.
+
+## Documentation and limitations
+
+- [SECURITY.md](SECURITY.md) documents the implemented controls and remaining production risks.
+- [TEST_REPORT.md](TEST_REPORT.md) records commands that were actually executed.
+- SQLite requires persistent storage in production, and the in-memory rate limiter is not shared across multiple instances.
 
 ## Notes
 

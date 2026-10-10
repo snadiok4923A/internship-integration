@@ -8,6 +8,8 @@
       name="description"
       content="Discover thoughtfully curated internships across technology, design, and data."
     >
+    <!-- Set this value to the deployed API origin plus /api when frontend and backend are hosted separately. -->
+    <meta name="api-base-url" content="/api">
     <title>InternBoard — Find your next internship</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -245,6 +247,8 @@
       </div>
       <div class="dialog-content" id="dialog-content"></div>
     </dialog>
+
+    <p id="submission-confirmation" class="submission-confirmation" role="status" hidden></p>
 
     <form id="application-form" class="application-form" novalidate>
       <div class="application-header">

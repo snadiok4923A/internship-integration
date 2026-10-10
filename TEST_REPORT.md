@@ -54,3 +54,11 @@ Verified result:
 ## Summary
 
 The backend API is running successfully, the SQLite database is seeded with internship records, and the actual automated tests confirm the core integration flows behave as expected.
+
+## Task 05 validation notes
+
+- The initial baseline run passed 6 tests, 0 failed.
+- The isolated final run passed 7 tests, including malformed JSON handling; 0 failed.
+- The frontend uses safe DOM APIs for API data and has visible focus styles, skip navigation, labelled controls, keyboard-closeable dialogs, and live status regions.
+- No Lighthouse or axe runner is installed in this repository, so numeric accessibility and performance scores are not claimed.
+- No live deployment or walkthrough video was available during this local run. Follow [DEPLOYMENT.md](DEPLOYMENT.md) for the remaining manual steps.
